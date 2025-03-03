@@ -12,17 +12,17 @@ def feynman_kac_sample(N: int, x0: float, y0: float, f, g):
     integral = 0
     num_steps = 0
 
-    delta_x = 0.001
+    dt = 0.00005
 
     gen = np.random.default_rng()
 
     while x > 0 and y > 0 and x < 1 and y < 1:
-        integral += g(x, y)
-        eps_x = gen.standard_normal()
-        x += eps_x * delta_x
+        integral += g(x, y)*dt
+        eps_x = gen.normal(scale=np.sqrt(dt))
+        x += eps_x
 
-        eps_y = gen.standard_normal()
-        y += eps_y * delta_x
+        eps_y = gen.normal(scale=np.sqrt(dt))
+        y += eps_y
 
         num_steps += 1
 
@@ -35,8 +35,6 @@ def feynman_kac_sample(N: int, x0: float, y0: float, f, g):
         y = 0
     elif y > 1:
         y = 1
-
-    integral /= num_steps
 
     integral += f(x, y)
 

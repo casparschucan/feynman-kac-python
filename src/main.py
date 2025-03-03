@@ -36,6 +36,6 @@ def feynman_kac_test_sol(x, y, N):
     return expectation
 
 
-feynman_kac_test_sol(.5, .8, 3000)
+feynman_kac_test_sol(.5, .5, 3000)
 
-feynman_kac_test_sol(.1, .7, 1000)
+feynman_kac_test_sol(.1, .7, 3000)
