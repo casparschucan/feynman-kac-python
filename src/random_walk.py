@@ -5,14 +5,12 @@ import numpy as np
 # and returns the needed values for feynman-kac poisson eval on the unit square
 
 
-def feynman_kac_sample(N: int, x0: float, y0: float, f, g):
+def feynman_kac_sample(x0: float, y0: float, f, g, dt):
 
     x = x0
     y = y0
     integral = 0
     num_steps = 0
-
-    dt = 0.00005
 
     gen = np.random.default_rng()
 
