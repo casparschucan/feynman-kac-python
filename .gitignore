@@ -172,3 +172,6 @@ cython_debug/
 
 # plotting
 **plot.png
+
+# data
+**data.csv
