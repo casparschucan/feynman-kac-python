@@ -1,5 +1,6 @@
 from random_walk import feynman_kac_sample
-from analyze_data import calculate_std, check_convergence
+from analyze_data import check_convergence
+from mlmc import mlmc
 
 from multiprocessing import Pool
 import matplotlib.pyplot as plt
@@ -66,7 +67,8 @@ def feynman_kac_eval(x, y, N, dt):
 
 test_positions = np.linspace(0.1, 0.5, 5)
 
-N = 512000
+N = 512
 dt = 0.01
 
-feynman_kac_eval(.9, .9, N, dt)
+# feynman_kac_eval(.9, .9, N, dt)
+print(mlmc(.5, .5, test_phi, test_phi, .1, .01))

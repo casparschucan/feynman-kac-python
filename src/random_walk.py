@@ -5,7 +5,7 @@ import numpy as np
 # and returns the needed values for feynman-kac poisson eval on the unit square
 
 
-def feynman_kac_sample(x0: float, y0: float, f, g, dt):
+def feynman_kac_sample_with_work(x0: float, y0: float, f, g, dt):
 
     x = x0
     y = y0
@@ -36,6 +36,11 @@ def feynman_kac_sample(x0: float, y0: float, f, g, dt):
 
     integral += f(x, y)
 
+    return integral, num_steps
+
+
+def feynman_kac_sample(x0: float, y0: float, f, g, dt):
+    integral, _ = feynman_kac_sample_with_work(x0, y0, f, g, dt)
     return integral
 
 
@@ -79,7 +84,7 @@ def feynman_kac_correlated(x0: float,
                            dt_fine: float,
                            level: int):
     if (level == 0):
-        return feynman_kac_sample(x0, y0, f, g, dt_fine)
+        return feynman_kac_sample_with_work(x0, y0, f, g, dt_fine)
 
     x_fine = x0
     x_coarse = x0
@@ -90,6 +95,7 @@ def feynman_kac_correlated(x0: float,
     fine_integral = 0
 
     dt_coarse = 2*dt_fine
+    num_steps = 0
 
     gen = np.random.default_rng()
     while is_in_domain(x_fine, y_fine) and is_in_domain(x_coarse, y_coarse):
@@ -99,6 +105,8 @@ def feynman_kac_correlated(x0: float,
 
         eps_y1 = gen.normal(scale=np.sqrt(dt_fine))
         y_fine += eps_y1
+
+        num_steps += 1
 
         if not is_in_domain(x_fine, y_fine):
             break
@@ -117,9 +125,11 @@ def feynman_kac_correlated(x0: float,
         eps_y_coarse = (eps_y1 + eps_y2)/np.sqrt(2)
         y_coarse += eps_y_coarse
 
+        num_steps += 1
+
     x_fine, y_fine = project_to_domain_edge(x_fine, y_fine)
     x_coarse, y_coarse = project_to_domain_edge(x_coarse, y_coarse)
 
     integral = fine_integral - coarse_integral
 
-    return integral
+    return integral, num_steps
