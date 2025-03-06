@@ -79,8 +79,8 @@ def mlmc(x: float, y: float, f, g, dt0: float, epsilon: float):
                                                                      dt, level,
                                                                      N_samples[level])
             work_at_level[level] += work
-            sample_sum_at_level += sample_sum
-            sample_sum_sq += sample_sum_sq
+            sample_sum_at_level[level] += sample_sum
+            sample_sum_sq_at_level[level] += sample_sum_sq
 
         # find convergence by linear fit
         x = np.linspace(2, max_level, max_level-1)
@@ -93,11 +93,11 @@ def mlmc(x: float, y: float, f, g, dt0: float, epsilon: float):
             converged = True
         else:
             max_level += 1
-            N_samples.append(100)
-            N_samples_diff.append(100)
-            sample_sum_at_level.append(0)
-            sample_sum_sq_at_level.append(0)
-            work_at_level.append(0)
+            N_samples = np.append(N_samples, 100)
+            N_samples_diff = np.append(N_samples_diff, 100)
+            sample_sum_at_level = np.append(sample_sum_at_level, 0)
+            sample_sum_sq_at_level = np.append(sample_sum_sq_at_level, 0)
+            work_at_level = np.append(work_at_level, 0)
 
-    expectation = np.sum(sample_sum_at_level/N_samples)/max_level
+    expectation = np.sum(sample_sum_at_level/N_samples)
     return expectation

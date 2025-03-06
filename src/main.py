@@ -70,5 +70,8 @@ test_positions = np.linspace(0.1, 0.5, 5)
 N = 512
 dt = 0.01
 
+x = .7
+y = .5
+
 # feynman_kac_eval(.9, .9, N, dt)
-print(mlmc(.5, .5, test_phi, test_phi, .1, .01))
+print(mlmc(x, y, test_phi, test_phi, .1, .0001), " vs ", test_phi(x, y))
