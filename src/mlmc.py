@@ -19,43 +19,26 @@ def generate_mlmc_data(x: float,
 
     sample_results = []
     n_procs = 10
+    chunk_size = 100000
 
     with Pool(processes=n_procs) as pool:
-        for i in range(N_samples):
-            if (i+1) % (N_samples // 10) == 0:
-                print("done with another 10%")
 
-            sample_results.append(pool.apply_async(feynman_kac_correlated,
-                                                   args=(x, y,
-                                                         f, g,
-                                                         dt_fine,
-                                                         level)))
+        sample_results = pool.imap_unordered(feynman_kac_correlated,
+                                         ((x, y, f, g, dt_fine, level) for _ in range(N_samples)),
+                                         chunksize=chunk_size)
 
-        results = np.array([r.get() for r in sample_results])
-
-        sample_sum = results[:, 0].sum()
-        sample_sum_sq = np.linalg.vector_norm(results[:, 0])**2
-        work = results[:, 1].sum()
-        # for r in sample_results:
-            # sample = r.get()
-            # if sample != 0:
-                # print("Alright that's a start")
-            # sample_sum += sample
-            # sample_sum_sq += sample**2
-
-    # for i in range(N_samples):
-        # sample = feynman_kac_correlated(x, y, f, g, dt_fine, level)
-        # work += 1
-        # sample_sum += sample
-        # sample_sum_sq += sample**2
+        for chunk in sample_results:
+            sample_sum += chunk[0]
+            sample_sum_sq += chunk[0]**2
+            work += chunk[1]
 
     return sample_sum, sample_sum_sq, work
 
 
 def mlmc(x: float, y: float, f, g, dt0: float, epsilon: float):
     max_level = 3
-    N_samples = np.full(max_level, 100)
-    N_samples_diff = np.full(max_level, 100)
+    N_samples = np.full(max_level, 1000)
+    N_samples_diff = np.full(max_level, 1000)
 
     converged = False
     costs = np.zeros(max_level)
@@ -92,8 +75,8 @@ def mlmc(x: float, y: float, f, g, dt0: float, epsilon: float):
         # the sum $\sum_{l=0}^{L}\sqrt(V_l*C_l)$
         var_cost_sq_sum = np.sum(np.sqrt(variances * cost_at_level))
 
-        print(variances)
-        print(cost_at_level)
+        print("Variance per level: ", variances)
+        print("Cost per sample per level: ", cost_at_level)
         # check how many samples are needed for each level
         for level in range(max_level):
             # optimal numbers of samples per Lagrange multiplier
@@ -126,11 +109,12 @@ def mlmc(x: float, y: float, f, g, dt0: float, epsilon: float):
             converged = True
         else:
             max_level += 1
-            N_samples = np.append(N_samples, 100)
-            N_samples_diff = np.append(N_samples_diff, 100)
+            N_samples = np.append(N_samples, 1000)
+            N_samples_diff = np.append(N_samples_diff, 1000)
             sample_sums = np.append(sample_sums, 0)
             sample_sums_sq = np.append(sample_sums_sq, 0)
             costs = np.append(costs, 0)
 
+    print("Expectation value per level: ", sample_sums/N_samples)
     expectation = np.sum(sample_sums/N_samples)
     return expectation

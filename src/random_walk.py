@@ -77,12 +77,8 @@ def project_to_domain_edge(x, y):
     return x, y
 
 
-def feynman_kac_correlated(x0: float,
-                           y0: float,
-                           f,
-                           g,
-                           dt_fine: float,
-                           level: int):
+def feynman_kac_correlated(args):
+    x0, y0, f, g, dt_fine, level = args
     if (level == 0):
         return feynman_kac_sample_with_work(x0, y0, f, g, dt_fine)
 
@@ -119,7 +115,7 @@ def feynman_kac_correlated(x0: float,
         y_fine += eps_y2
 
         coarse_integral += g(x_coarse, y_coarse)*dt_coarse
-        eps_x_coarse = (eps_x1 + eps_x2)/np.sqrt(2)
+        eps_x_coarse = (eps_x1 + eps_x2)
         x_coarse += eps_x_coarse
 
         eps_y_coarse = (eps_y1 + eps_y2)/np.sqrt(2)
@@ -131,4 +127,5 @@ def feynman_kac_correlated(x0: float,
     x_coarse, y_coarse = project_to_domain_edge(x_coarse, y_coarse)
 
     integral = fine_integral - coarse_integral
+
     return integral, num_steps

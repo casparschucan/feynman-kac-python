@@ -8,8 +8,12 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
+def non_hom_test(x, y):
+    return np.sin(x)*np.sin(y)
+
+
 def test_phi(x, y):
-    return np.sin(np.pi*x)*np.sin(np.pi * y)
+    return np.sin(np.pi*x)*np.sin(np.pi*y)
 
 
 def test_bound(x, y):
@@ -31,8 +35,8 @@ def generate_samples(x, y, N, dt):
                 sample_results.append(pool.apply_async(feynman_kac_sample,
                                                        args=(x,
                                                              y,
-                                                             test_phi,
-                                                             test_phi,
+                                                             test_bound,
+                                                             test_rhs,
                                                              dt)))
 
             samples = np.array([r.get() for r in sample_results])
@@ -71,4 +75,6 @@ x = .5
 y = .5
 
 # feynman_kac_eval(.9, .9, N, dt)
-print(mlmc(x, y, test_bound, test_rhs, .005, .001), " vs ", test_phi(x, y))
+print(mlmc(x, y, test_bound, test_rhs, .001, .004), " vs ", test_phi(x, y))
+# samples = generate_samples(x, y, 100000, .0001)
+# print(samples.mean())
