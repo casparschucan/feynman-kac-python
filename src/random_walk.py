@@ -131,7 +131,4 @@ def feynman_kac_correlated(x0: float,
     x_coarse, y_coarse = project_to_domain_edge(x_coarse, y_coarse)
 
     integral = fine_integral - coarse_integral
-    print("output works")
-    if integral != 0:
-        print("at least this")
-    return integral
+    return integral, num_steps

@@ -17,29 +17,37 @@ def generate_mlmc_data(x: float,
 
     print("generating ", N_samples, " samples")
 
-    if __name__ == '__main__':
+    sample_results = []
+    n_procs = 10
 
-        sample_results = []
-        n_procs = 10
-        with Pool(processes=n_procs) as pool:
-            for i in range(N_samples):
-                sample_results.append(pool.apply_async(feynman_kac_correlated,
-                                                       args=(x, y,
-                                                             f, g,
-                                                             dt_fine,
-                                                             level)))
-                sample = sample_results[i].get()
-                if sample != 0:
-                    print("Alright that's a start")
-                sample_sum += sample
-                sample_sum_sq += sample**2
+    with Pool(processes=n_procs) as pool:
+        for i in range(N_samples):
+            if (i+1) % (N_samples // 10) == 0:
+                print("done with another 10%")
 
-            # for r in sample_results:
-                # sample = r.get()
-                # if sample != 0:
-                    # print("Alright that's a start")
-                # sample_sum += sample
-                # sample_sum_sq += sample**2
+            sample_results.append(pool.apply_async(feynman_kac_correlated,
+                                                   args=(x, y,
+                                                         f, g,
+                                                         dt_fine,
+                                                         level)))
+
+        results = np.array([r.get() for r in sample_results])
+
+        sample_sum = results[:, 0].sum()
+        sample_sum_sq = np.linalg.vector_norm(results[:, 0])**2
+        work = results[:, 1].sum()
+        # for r in sample_results:
+            # sample = r.get()
+            # if sample != 0:
+                # print("Alright that's a start")
+            # sample_sum += sample
+            # sample_sum_sq += sample**2
+
+    # for i in range(N_samples):
+        # sample = feynman_kac_correlated(x, y, f, g, dt_fine, level)
+        # work += 1
+        # sample_sum += sample
+        # sample_sum_sq += sample**2
 
     return sample_sum, sample_sum_sq, work
 
@@ -112,7 +120,8 @@ def mlmc(x: float, y: float, f, g, dt0: float, epsilon: float):
         a, b = np.polyfit(x, y, 1)
 
         # check convergence
-        conv_lhs = sample_sums[max_level]/N_samples[max_level]/(2.0**(-b) - 1)
+        conv_lhs = sample_sums[max_level-1] / N_samples[max_level-1]
+        conv_lhs /= (2.0**(-b) - 1)
         if conv_lhs < epsilon/np.sqrt(2):
             converged = True
         else:

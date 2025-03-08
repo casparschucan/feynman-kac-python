@@ -9,7 +9,7 @@ import numpy as np
 
 
 def test_phi(x, y):
-    return np.sin(x)*np.sin(y)
+    return np.sin(np.pi*x)*np.sin(np.pi * y)
 
 
 def test_bound(x, y):
@@ -40,9 +40,6 @@ def generate_samples(x, y, N, dt):
     return samples
 
 
-print("starting loop")
-
-
 def feynman_kac_eval(x, y, N, dt):
     Ns = 100 * np.logspace(0, 6, 7, base=2)
 
@@ -70,8 +67,8 @@ test_positions = np.linspace(0.1, 0.5, 5)
 N = 512
 dt = 0.01
 
-x = .7
+x = .5
 y = .5
 
 # feynman_kac_eval(.9, .9, N, dt)
-print(mlmc(x, y, test_phi, test_phi, .1, .0001), " vs ", test_phi(x, y))
+print(mlmc(x, y, test_bound, test_rhs, .005, .001), " vs ", test_phi(x, y))
