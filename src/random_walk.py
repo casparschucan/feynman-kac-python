@@ -1,4 +1,5 @@
 import numpy as np
+from visualize import visualize_random_walk
 
 
 # a function samples a random walk starting from a specific point
@@ -93,14 +94,21 @@ def feynman_kac_correlated(args):
     dt_coarse = 2*dt_fine
     num_steps = 0
 
+    steps_x1 = [x0]
+    steps_y1 = [y0]
+    steps_x2 = [x0]
+    steps_y2 = [y0]
+
     gen = np.random.default_rng()
     while is_in_domain(x_fine, y_fine) and is_in_domain(x_coarse, y_coarse):
         fine_integral += g(x_fine, y_fine)*dt_fine
         eps_x1 = gen.normal(scale=np.sqrt(dt_fine))
         x_fine += eps_x1
+        steps_x1.append(x_fine)
 
         eps_y1 = gen.normal(scale=np.sqrt(dt_fine))
         y_fine += eps_y1
+        steps_y1.append(y_fine)
 
         num_steps += 1
 
@@ -110,22 +118,25 @@ def feynman_kac_correlated(args):
         fine_integral += g(x_fine, y_fine)*dt_fine
         eps_x2 = gen.normal(scale=np.sqrt(dt_fine))
         x_fine += eps_x2
+        steps_x1.append(x_fine)
 
         eps_y2 = gen.normal(scale=np.sqrt(dt_fine))
         y_fine += eps_y2
+        steps_y1.append(y_fine)
 
         coarse_integral += g(x_coarse, y_coarse)*dt_coarse
         eps_x_coarse = (eps_x1 + eps_x2)
         x_coarse += eps_x_coarse
+        steps_x2.append(x_coarse)
 
-        eps_y_coarse = (eps_y1 + eps_y2)/np.sqrt(2)
+        eps_y_coarse = (eps_y1 + eps_y2)
         y_coarse += eps_y_coarse
+        steps_y2.append(y_coarse)
 
         num_steps += 1
 
     x_fine, y_fine = project_to_domain_edge(x_fine, y_fine)
     x_coarse, y_coarse = project_to_domain_edge(x_coarse, y_coarse)
-
     integral = fine_integral - coarse_integral
 
     return integral, num_steps

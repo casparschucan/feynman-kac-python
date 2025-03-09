@@ -37,8 +37,9 @@ def generate_mlmc_data(x: float,
 
 def mlmc(x: float, y: float, f, g, dt0: float, epsilon: float):
     max_level = 3
-    N_samples = np.full(max_level, 1000)
-    N_samples_diff = np.full(max_level, 1000)
+    N_start = 100
+    N_samples = np.full(max_level, N_start)
+    N_samples_diff = np.full(max_level, N_start)
 
     converged = False
     costs = np.zeros(max_level)
@@ -99,18 +100,20 @@ def mlmc(x: float, y: float, f, g, dt0: float, epsilon: float):
 
         # find convergence by linear fit
         x = np.linspace(2, max_level, max_level-1)
-        y = np.log(np.abs(sample_sums[1:max_level]/N_samples[1:max_level]))
+        y = np.log2(np.abs(sample_sums[1:max_level]/N_samples[1:max_level]))
         a, b = np.polyfit(x, y, 1)
+
+        print("Measured convergence rate ", -a)
 
         # check convergence
         conv_lhs = sample_sums[max_level-1] / N_samples[max_level-1]
-        conv_lhs /= (2.0**(-b) - 1)
+        conv_lhs /= (2.0**(-a) - 1)
         if conv_lhs < epsilon/np.sqrt(2):
             converged = True
         else:
             max_level += 1
-            N_samples = np.append(N_samples, 1000)
-            N_samples_diff = np.append(N_samples_diff, 1000)
+            N_samples = np.append(N_samples, N_start)
+            N_samples_diff = np.append(N_samples_diff, N_start)
             sample_sums = np.append(sample_sums, 0)
             sample_sums_sq = np.append(sample_sums_sq, 0)
             costs = np.append(costs, 0)

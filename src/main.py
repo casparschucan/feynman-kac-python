@@ -1,4 +1,4 @@
-from random_walk import feynman_kac_sample
+from random_walk import feynman_kac_sample, feynman_kac_correlated
 from analyze_data import check_convergence
 from mlmc import mlmc
 
@@ -45,9 +45,9 @@ def generate_samples(x, y, N, dt):
 
 
 def feynman_kac_eval(x, y, N, dt):
-    Ns = 100 * np.logspace(0, 6, 7, base=2)
+    Ns = 100 * np.logspace(0, 5, 7, base=2)
 
-    Monte_Carlo_ideal = np.logspace(0, 6, 7, base=(1/np.sqrt(2)))
+    Monte_Carlo_ideal = np.logspace(0, 5, 7, base=(1/np.sqrt(2)))
 
     samples = generate_samples(x, y, N, dt)
 
@@ -64,17 +64,20 @@ def feynman_kac_eval(x, y, N, dt):
     print("At position ", x, y, " we estimate a value of: ", samples.mean(),
           " vs the true value of: ", test_phi(x, y),
           " with a difference of: ", samples.mean() - test_phi(x, y))
+    plt.show()
 
 
 test_positions = np.linspace(0.1, 0.5, 5)
 
-N = 512
-dt = 0.01
+N = 25600
+dt = 0.00001
 
 x = .5
 y = .5
 
-# feynman_kac_eval(.9, .9, N, dt)
-print(mlmc(x, y, test_bound, test_rhs, .001, .004), " vs ", test_phi(x, y))
+feynman_kac_eval(x, y, N, dt)
+# print(mlmc(x, y, non_hom_test, non_hom_test, .1, .001), " vs ", non_hom_test(x, y))
 # samples = generate_samples(x, y, 100000, .0001)
 # print(samples.mean())
+# args = (x, y, test_bound, test_rhs, 0.005, 2)
+# feynman_kac_correlated(args)
