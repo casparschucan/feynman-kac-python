@@ -77,8 +77,21 @@ x = .5
 y = .5
 
 # feynman_kac_eval(x, y, N, dt)
-print(mlmc(x, y, test_bound, test_rhs, .001, .01), " vs ", test_phi(x, y))
+print(mlmc(x, y, test_bound, test_rhs, .001, .0001), " vs ", test_phi(x, y))
 # samples = generate_samples(x, y, 100000, .0001)
 # print(samples.mean())
 # args = (x, y, test_bound, test_rhs, 0.005, 2)
 # feynman_kac_correlated(args)
+eps = [1e-1, 1e-2, 1e-3, 1e-4]
+levels = np.zeros(len(eps))
+costs = np.zeros(len(eps))
+costs_sd = np.zeros(len(eps))
+results = np.zeros(len(eps))
+
+for i in range(len(eps)):
+    P, L = mlmc(x, y, test_bound, test_rhs, .001, eps[i])
+    levels[i] = L
+    results[i] = P
+
+print(results)
+print(levels)

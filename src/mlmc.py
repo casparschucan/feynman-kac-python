@@ -4,6 +4,41 @@ import numpy as np
 from multiprocessing import Pool
 
 
+def ldd(dtf: float, nf: int, p, sigma, x0):
+    dtc = dtf*2
+    nc = nf//2
+    X_f = x0
+    X_c = x0
+    gen = np.random.default_rng()
+    for i in range(nc):
+        ξ_1 = gen.standard_normal()
+        ξ_2 = gen.standard_normal()
+        X_f = X_f - (X_f**p)*dtf + np.sqrt(2.0*dtf)*sigma*ξ_1
+        X_f = X_f - (X_f**p)*dtf + np.sqrt(2.0*dtf)*sigma*ξ_2
+
+        ξ_3 = (ξ_1 + ξ_2)/np.sqrt(2.0)
+        X_c = X_c - (X_c**p)*dtc + np.sqrt(2.0*dtc)*sigma*ξ_3
+    return X_f, X_c
+
+
+def sde(level: int, N_samples: int, p=1, T=0.1, sigma=1.0, x0=0.5):
+    nf = 2**level
+    dtf = T/nf
+    sums = np.zeros(6)
+    sums[1] = nf*N_samples
+    sums[2] = sums[3] = sums[4] = sums[5] = 0
+    for i in range(N_samples):
+        Pf, Pc = ldd(dtf, nf, p, sigma, x0)
+        dP = Pf
+        if (level > 0):
+            dP -= Pc
+        sums[2] += dP
+        sums[3] += dP**2
+        sums[4] += Pf
+        sums[5] += Pf**2
+    return sums[2], sums[3], sums[1]
+
+
 def generate_mlmc_data(x: float,
                        y: float,
                        f,
@@ -15,23 +50,25 @@ def generate_mlmc_data(x: float,
     sample_sum = 0
     sample_sum_sq = 0
 
-    print("generating ", N_samples, " samples")
+    return sde(level, N_samples)
 
-    n_procs = 10
-    chunk_size = 100000
+    # print("generating ", N_samples, " samples")
 
-    with Pool(processes=n_procs) as pool:
+    # n_procs = 10
+    # chunk_size = 100000
 
-        sample_results = pool.imap_unordered(feynman_kac_correlated,
-                                         ((x, y, f, g, dt_fine, level) for _ in range(N_samples)),
-                                         chunksize=chunk_size)
+    # with Pool(processes=n_procs) as pool:
 
-        for sample in sample_results:
-            sample_sum += sample[0]
-            sample_sum_sq += sample[0]**2
-            work += sample[1]
+        # sample_results = pool.imap_unordered(feynman_kac_correlated,
+                                         # ((x, y, f, g, dt_fine, level) for _ in range(N_samples)),
+                                         # chunksize=chunk_size)
 
-    return sample_sum, sample_sum_sq, work
+        # for sample in sample_results:
+            # sample_sum += sample[0]
+            # sample_sum_sq += sample[0]**2
+            # work += sample[1]
+
+    # return sample_sum, sample_sum_sq, work
 
 
 def mlmc(x: float, y: float, f, g, dt0: float, epsilon: float):
@@ -120,4 +157,4 @@ def mlmc(x: float, y: float, f, g, dt0: float, epsilon: float):
 
     print("Expectation value per level: ", sample_sums/N_samples)
     expectation = np.sum(sample_sums/N_samples)
-    return expectation
+    return expectation, max_level
