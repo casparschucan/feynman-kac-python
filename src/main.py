@@ -68,17 +68,28 @@ def feynman_kac_eval(x, y, N, dt):
     plt.show()
 
 
-test_positions = np.linspace(0.1, 0.5, 5)
+# Set up argument parsing
+desc = 'Simulate feynman-kac poisson solver'
+parser = argparse.ArgumentParser(description=desc)
+parser.add_argument('-e', '--epsilon', type=float, default=.01)
+parser.add_argument('-s', '--standard_mc', action='store_true')
+parser.add_argument('-d', '--dt0', type=float, default=.01)
+parser.add_argument('-N', '--N_samples', type=int, default=256000)
+parser.add_argument('-x', '--x', type=float, default=.5)
+parser.add_argument('-y', '--y', type=float, default=.5)
+parser.add_argument('--non_homogeneous', action='store_true')
 
-N = 25600
-dt = 0.00001
+args = parser.parse_args()
 
-x = .5
-y = .5
-
-# feynman_kac_eval(x, y, N, dt)
-print(mlmc(x, y, test_bound, test_rhs, .001, .01), " vs ", test_phi(x, y))
-# samples = generate_samples(x, y, 100000, .0001)
-# print(samples.mean())
-# args = (x, y, test_bound, test_rhs, 0.005, 2)
-# feynman_kac_correlated(args)
+if args.standard_mc:
+    feynman_kac_eval(args.x, args.y, args.N_samples, args.dt0)
+elif args.non_homogeneous:
+    res = mlmc(args.x, args.y,
+               non_hom_test, non_hom_test,
+               args.dt0, args.epsilon)
+    print(res, " vs. ", non_hom_test(args.x, args.y))
+else:
+    res = mlmc(args.x, args.y,
+               test_bound, test_rhs,
+               args.dt0, args.epsilon)
+    print(res, " vs. ", test_phi(args.x, args.y))
