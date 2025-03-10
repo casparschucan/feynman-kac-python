@@ -4,6 +4,7 @@ from mlmc import mlmc
 
 from multiprocessing import Pool
 import matplotlib.pyplot as plt
+import argparse
 
 import numpy as np
 
