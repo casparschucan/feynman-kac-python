@@ -18,7 +18,7 @@ def generate_mlmc_data(x: float,
     print("generating ", N_samples, " samples")
 
     n_procs = 10
-    chunk_size = 100000
+    chunk_size = 10000
 
     with Pool(processes=n_procs) as pool:
 
