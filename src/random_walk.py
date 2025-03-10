@@ -78,7 +78,7 @@ def project_to_domain_edge(x, y):
     return x, y
 
 
-def feynman_kac_correlated(args):
+def feynman_kac_correlated(args, plot_walks=False):
     x0, y0, f, g, dt_fine, level = args
     if (level == 0):
         return feynman_kac_sample_with_work(x0, y0, f, g, dt_fine)
@@ -94,49 +94,68 @@ def feynman_kac_correlated(args):
     dt_coarse = 2*dt_fine
     num_steps = 0
 
-    steps_x1 = [x0]
-    steps_y1 = [y0]
-    steps_x2 = [x0]
-    steps_y2 = [y0]
+    fine_in = True
+    coarse_in = True
 
     gen = np.random.default_rng()
-    while is_in_domain(x_fine, y_fine) and is_in_domain(x_coarse, y_coarse):
-        fine_integral += g(x_fine, y_fine)*dt_fine
+
+    steps1_x = [x0]
+    steps2_x = [x0]
+    steps1_y = [y0]
+    steps2_y = [y0]
+
+    while fine_in or coarse_in:
         eps_x1 = gen.normal(scale=np.sqrt(dt_fine))
-        x_fine += eps_x1
-        steps_x1.append(x_fine)
 
         eps_y1 = gen.normal(scale=np.sqrt(dt_fine))
-        y_fine += eps_y1
-        steps_y1.append(y_fine)
 
-        num_steps += 1
+        if fine_in:
+            fine_integral += g(x_fine, y_fine)*dt_fine
+            x_fine += eps_x1
+            y_fine += eps_y1
+            num_steps += 1
+            if plot_walks:
+                steps1_x.append(x_fine)
+                steps1_y.append(y_fine)
 
         if not is_in_domain(x_fine, y_fine):
-            break
+            fine_in = False
 
-        fine_integral += g(x_fine, y_fine)*dt_fine
         eps_x2 = gen.normal(scale=np.sqrt(dt_fine))
-        x_fine += eps_x2
-        steps_x1.append(x_fine)
 
         eps_y2 = gen.normal(scale=np.sqrt(dt_fine))
-        y_fine += eps_y2
-        steps_y1.append(y_fine)
 
-        coarse_integral += g(x_coarse, y_coarse)*dt_coarse
+        if fine_in:
+            fine_integral += g(x_fine, y_fine)*dt_fine
+            x_fine += eps_x1
+            y_fine += eps_y1
+            num_steps += 1
+            if plot_walks:
+                steps1_x.append(x_fine)
+                steps1_y.append(y_fine)
+
         eps_x_coarse = (eps_x1 + eps_x2)
-        x_coarse += eps_x_coarse
-        steps_x2.append(x_coarse)
 
         eps_y_coarse = (eps_y1 + eps_y2)
-        y_coarse += eps_y_coarse
-        steps_y2.append(y_coarse)
 
-        num_steps += 1
+        if coarse_in:
+            coarse_integral += g(x_coarse, y_coarse)*dt_coarse
+            x_coarse += eps_x_coarse
+            y_coarse += eps_y_coarse
+            if plot_walks:
+                steps2_x.append(x_coarse)
+                steps2_y.append(y_coarse)
+
+        if not is_in_domain(x_coarse, y_coarse):
+            coarse_in = False
+
+    if plot_walks:
+        visualize_random_walk(steps1_x, steps1_y, steps2_x, steps2_y)
 
     x_fine, y_fine = project_to_domain_edge(x_fine, y_fine)
     x_coarse, y_coarse = project_to_domain_edge(x_coarse, y_coarse)
+    fine_integral += f(x_fine, y_fine)
+    coarse_integral += f(x_coarse, y_coarse)
     integral = fine_integral - coarse_integral
 
     return integral, num_steps

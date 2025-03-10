@@ -20,3 +20,4 @@ timestep for non-mlmc simulations)
 - `--non_homogeneous` defaults to false uses the non-homogeneous test function
 - `-s, --standard_mc` defaults to false if set runs non-mlmc simulation
 - `-N, --N_samples` defaults to 256000 the number of samples for non-mlmc runs
+- `-w, --plot_walk` defaults to false if set plots two correlated random walks

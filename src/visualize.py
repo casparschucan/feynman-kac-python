@@ -18,6 +18,5 @@ def visualize_random_walk(steps1_x, steps1_y, steps2_x, steps2_y):
     plt.title("Two Correlated Random Walks on Unit Square")
     plt.legend()
     plt.grid(True)
-    plt.savefig("random_walk_viz.png")
     # Show the plot
     plt.show()

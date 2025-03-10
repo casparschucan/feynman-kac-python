@@ -78,11 +78,15 @@ parser.add_argument('-N', '--N_samples', type=int, default=256000)
 parser.add_argument('-x', '--x', type=float, default=.5)
 parser.add_argument('-y', '--y', type=float, default=.5)
 parser.add_argument('--non_homogeneous', action='store_true')
+parser.add_argument('-w', '--plot_walks', action='store_true')
 
 args = parser.parse_args()
 
 if args.standard_mc:
     feynman_kac_eval(args.x, args.y, args.N_samples, args.dt0)
+elif args.plot_walks:
+    feynman_kac_correlated((args.x, args.y, test_bound, test_rhs, args.dt0, 1),
+                           plot_walks=True)
 elif args.non_homogeneous:
     res = mlmc(args.x, args.y,
                non_hom_test, non_hom_test,
