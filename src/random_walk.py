@@ -127,8 +127,8 @@ def feynman_kac_correlated(args, plot_walks=False):
 
         if fine_in:
             fine_integral += g(x_fine, y_fine)*dt_fine
-            x_fine += eps_x1
-            y_fine += eps_y1
+            x_fine += eps_x2
+            y_fine += eps_y2
             num_steps += 1
             if plot_walks:
                 steps1_x.append(x_fine)
@@ -137,7 +137,6 @@ def feynman_kac_correlated(args, plot_walks=False):
         eps_x_coarse = (eps_x1 + eps_x2)
 
         eps_y_coarse = (eps_y1 + eps_y2)
-
         if coarse_in:
             coarse_integral += g(x_coarse, y_coarse)*dt_coarse
             x_coarse += eps_x_coarse
