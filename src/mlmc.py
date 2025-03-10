@@ -108,6 +108,7 @@ def mlmc(x: float, y: float, f, g, dt0: float, epsilon: float):
         # check convergence
         conv_lhs = sample_sums[max_level-1] / N_samples[max_level-1]
         conv_lhs /= (2.0**(-a) - 1)
+        print("the estimated error is: ", conv_lhs * np.sqrt(2))
         if conv_lhs < epsilon/np.sqrt(2):
             converged = True
         else:

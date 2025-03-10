@@ -75,8 +75,8 @@ dt = 0.00001
 x = .5
 y = .5
 
-feynman_kac_eval(x, y, N, dt)
-# print(mlmc(x, y, non_hom_test, non_hom_test, .1, .001), " vs ", non_hom_test(x, y))
+# feynman_kac_eval(x, y, N, dt)
+print(mlmc(x, y, test_bound, test_rhs, .025, .001), " vs ", test_phi(x, y))
 # samples = generate_samples(x, y, 100000, .0001)
 # print(samples.mean())
 # args = (x, y, test_bound, test_rhs, 0.005, 2)
