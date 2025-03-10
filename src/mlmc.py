@@ -17,7 +17,6 @@ def generate_mlmc_data(x: float,
 
     print("generating ", N_samples, " samples")
 
-    sample_results = []
     n_procs = 10
     chunk_size = 100000
 
@@ -27,10 +26,10 @@ def generate_mlmc_data(x: float,
                                          ((x, y, f, g, dt_fine, level) for _ in range(N_samples)),
                                          chunksize=chunk_size)
 
-        for chunk in sample_results:
-            sample_sum += chunk[0]
-            sample_sum_sq += chunk[0]**2
-            work += chunk[1]
+        for sample in sample_results:
+            sample_sum += sample[0]
+            sample_sum_sq += sample[0]**2
+            work += sample[1]
 
     return sample_sum, sample_sum_sq, work
 
@@ -75,7 +74,7 @@ def mlmc(x: float, y: float, f, g, dt0: float, epsilon: float):
 
         # the sum $\sum_{l=0}^{L}\sqrt(V_l*C_l)$
         var_cost_sq_sum = np.sum(np.sqrt(variances * cost_at_level))
-
+        print("Samples per level:", N_samples)
         print("Variance per level: ", variances)
         print("Cost per sample per level: ", cost_at_level)
         # check how many samples are needed for each level
@@ -85,7 +84,7 @@ def mlmc(x: float, y: float, f, g, dt0: float, epsilon: float):
                                     * np.sqrt(variances[level]
                                               / cost_at_level[level])
                                     * var_cost_sq_sum)
-            N_samples_diff = max(0, optimal_n_samples - N_samples[level])
+            N_samples_diff[level] = max(0, optimal_n_samples - N_samples[level])
             N_samples[level] = max(N_samples[level], optimal_n_samples)
 
             dt = dt0/2**level
@@ -93,21 +92,21 @@ def mlmc(x: float, y: float, f, g, dt0: float, epsilon: float):
             sample_sum, sample_sum_sq, work = generate_mlmc_data(x, y,
                                                                  f, g,
                                                                  dt, level,
-                                                                 N_samples[level])
+                                                                 N_samples_diff[level])
             costs[level] += work
             sample_sums[level] += sample_sum
             sample_sums_sq[level] += sample_sum_sq
 
         # find convergence by linear fit
-        x = np.linspace(2, max_level, max_level-1)
-        y = np.log2(np.abs(sample_sums[1:max_level]/N_samples[1:max_level]))
-        a, b = np.polyfit(x, y, 1)
+        x_conv = np.linspace(2, max_level, max_level-1)
+        y_conv = np.log2(np.abs(sample_sums[1:max_level]/N_samples[1:max_level]))
+        a, b = np.polyfit(x_conv, y_conv, 1)
 
         print("Measured convergence rate ", -a)
 
         # check convergence
         conv_lhs = sample_sums[max_level-1] / N_samples[max_level-1]
-        conv_lhs /= (2.0**(-a) - 1)
+        conv_lhs /= (2.0**(a) - 1)
         print("the estimated error is: ", conv_lhs * np.sqrt(2))
         if conv_lhs < epsilon/np.sqrt(2):
             converged = True
