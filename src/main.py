@@ -88,12 +88,16 @@ elif args.plot_walks:
     feynman_kac_correlated((args.x, args.y, test_bound, test_rhs, args.dt0, 1),
                            plot_walks=True)
 elif args.non_homogeneous:
-    res = mlmc(args.x, args.y,
-               non_hom_test, non_hom_test,
-               args.dt0, args.epsilon)
+    res, cost, max_level = mlmc(args.x, args.y,
+                                non_hom_test, non_hom_test,
+                                args.dt0, args.epsilon)
     print(res, " vs. ", non_hom_test(args.x, args.y))
+    print("had to generate ", cost, " random numbers")
+    print("and went up to level ", max_level)
 else:
-    res = mlmc(args.x, args.y,
-               test_bound, test_rhs,
-               args.dt0, args.epsilon)
+    res, cost, max_level = mlmc(args.x, args.y,
+                                test_bound, test_rhs,
+                                args.dt0, args.epsilon)
     print(res, " vs. ", test_phi(args.x, args.y))
+    print("had to generate ", cost, " random numbers")
+    print("and went up to level ", max_level)

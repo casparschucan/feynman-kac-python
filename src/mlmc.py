@@ -120,4 +120,5 @@ def mlmc(x: float, y: float, f, g, dt0: float, epsilon: float):
 
     print("Expectation value per level: ", sample_sums/N_samples)
     expectation = np.sum(sample_sums/N_samples)
-    return expectation
+    work = costs.sum()
+    return expectation, work, max_level
