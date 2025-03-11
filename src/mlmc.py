@@ -10,15 +10,18 @@ def generate_mlmc_data(x: float,
                        g,
                        dt_fine: float,
                        level: int,
-                       N_samples: int):
+                       N_samples: int,
+                       debug=False):
     work = 0
     sample_sum = 0
     sample_sum_sq = 0
-
-    print("generating ", N_samples, " samples")
+    if debug:
+        print("generating ", N_samples, " samples")
 
     n_procs = 10
-    chunk_size = 10000
+
+    chunk_size = max(N_samples // n_procs, 10)
+    chunk_size = min(chunk_size, 100000)
 
     with Pool(processes=n_procs) as pool:
 
@@ -34,7 +37,7 @@ def generate_mlmc_data(x: float,
     return sample_sum, sample_sum_sq, work
 
 
-def mlmc(x: float, y: float, f, g, dt0: float, epsilon: float):
+def mlmc(x: float, y: float, f, g, dt0: float, epsilon: float, debug=False):
     max_level = 3
     N_start = 100
     N_samples = np.full(max_level, N_start)
@@ -74,9 +77,10 @@ def mlmc(x: float, y: float, f, g, dt0: float, epsilon: float):
 
         # the sum $\sum_{l=0}^{L}\sqrt(V_l*C_l)$
         var_cost_sq_sum = np.sum(np.sqrt(variances * cost_at_level))
-        print("Samples per level:", N_samples)
-        print("Variance per level: ", variances)
-        print("Cost per sample per level: ", cost_at_level)
+        if debug:
+            print("Samples per level:", N_samples)
+            print("Variance per level: ", variances)
+            print("Cost per sample per level: ", cost_at_level)
         # check how many samples are needed for each level
         for level in range(max_level):
             # optimal numbers of samples per Lagrange multiplier
@@ -102,12 +106,14 @@ def mlmc(x: float, y: float, f, g, dt0: float, epsilon: float):
         y_conv = np.log2(np.abs(sample_sums[1:max_level]/N_samples[1:max_level]))
         a, b = np.polyfit(x_conv, y_conv, 1)
 
-        print("Measured convergence rate ", -a)
+        if debug:
+            print("Measured convergence rate ", -a)
 
         # check convergence
         conv_lhs = np.abs(sample_sums[max_level-1]) / N_samples[max_level-1]
         conv_lhs /= (2.0**(-a) - 1)
-        print("the estimated error is: ", conv_lhs * np.sqrt(2))
+        if debug:
+            print("the estimated error is: ", conv_lhs * np.sqrt(2))
         if conv_lhs < epsilon/np.sqrt(2):
             converged = True
         else:
@@ -118,7 +124,8 @@ def mlmc(x: float, y: float, f, g, dt0: float, epsilon: float):
             sample_sums_sq = np.append(sample_sums_sq, 0)
             costs = np.append(costs, 0)
 
-    print("Expectation value per level: ", sample_sums/N_samples)
+    if debug:
+        print("Expectation value per level: ", sample_sums/N_samples)
     expectation = np.sum(sample_sums/N_samples)
     work = costs.sum()
     return expectation, work, max_level
