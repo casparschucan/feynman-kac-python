@@ -21,3 +21,6 @@ timestep for non-mlmc simulations)
 - `-s, --standard_mc` defaults to false if set runs non-mlmc simulation
 - `-N, --N_samples` defaults to 256000 the number of samples for non-mlmc runs
 - `-w, --plot_walk` defaults to false if set plots two correlated random walks
+
+## Jupyter notebooks
+enter the virtual environment and start your jupyter lab or notebook from there
