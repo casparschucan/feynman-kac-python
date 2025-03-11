@@ -134,6 +134,9 @@ def feynman_kac_correlated(args, plot_walks=False):
                 steps1_x.append(x_fine)
                 steps1_y.append(y_fine)
 
+        if not is_in_domain(x_fine, y_fine):
+            fine_in = False
+
         eps_x_coarse = (eps_x1 + eps_x2)
 
         eps_y_coarse = (eps_y1 + eps_y2)
