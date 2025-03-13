@@ -110,24 +110,40 @@ def mlmc(x: float, y: float, f, g, dt0: float, epsilon: float, debug=False):
             sample_sums_sq[level] += sample_sum_sq
 
         # find convergence by linear fit
+        # Specifically convergence rate alpha of the error,
+        # beta of the variance and gamma of the cost
         x_conv = np.linspace(2, max_level, max_level-1)
         y_conv = np.log2(np.abs(sample_sums[1:max_level]/N_samples[1:max_level]))
-        a, b = np.polyfit(x_conv, y_conv, 1)
+        alpha, _ = np.polyfit(x_conv, y_conv, 1)
+
+        y_var = -np.log2(variances[1:])
+        beta, _ = np.polyfit(x_conv, y_var, 1)
+        beta = max(beta, .5)
+
+        y_cost = np.log2(cost_at_level[1:])
+        gamma, _ = np.polyfit(x_conv, y_cost, 1)
+        gamma = max(gamma, .5)
 
         if debug:
-            print("Measured convergence rate ", -a)
+            print("Measured convergence rate ", -alpha)
 
         # check convergence
         conv_lhs = np.abs(sample_sums[max_level-1]) / N_samples[max_level-1]
-        conv_lhs /= (2.0**(-a) - 1)
+        conv_lhs /= (2.0**(-alpha) - 1)
         if debug:
             print("the estimated error is: ", conv_lhs * np.sqrt(2))
         if conv_lhs < epsilon/np.sqrt(2):
             converged = True
         else:
+            VarianceL = variances[max_level-1] / (2**beta)
+            CostL = cost_at_level[max_level-1] * (2**gamma)
+            var_cost_sq_sum += np.sqrt(CostL * VarianceL)
+            optimal_n_samples = int(2/(epsilon**2)
+                                    * np.sqrt(VarianceL / CostL)
+                                    * var_cost_sq_sum)
             max_level += 1
-            N_samples = np.append(N_samples, N_start)
-            N_samples_diff = np.append(N_samples_diff, N_start)
+            N_samples = np.append(N_samples, optimal_n_samples)
+            N_samples_diff = np.append(N_samples_diff, optimal_n_samples)
             sample_sums = np.append(sample_sums, 0)
             sample_sums_sq = np.append(sample_sums_sq, 0)
             costs = np.append(costs, 0)
