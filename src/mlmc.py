@@ -15,9 +15,9 @@ def generate_mlmc_data(x: float,
     work = 0
     sample_sum = 0
     sample_sum_sq = 0
-    counter = 0
-    if debug:
-        print("generating ", N_samples, " samples")
+    # counter = 0
+    # if debug:
+        # print("generating ", N_samples, " samples")
 
     n_procs = 10
 
@@ -34,9 +34,9 @@ def generate_mlmc_data(x: float,
             sample_sum += sample[0]
             sample_sum_sq += sample[0]**2
             work += sample[1]
-            counter += 1
-            if (counter % chunk_size == 0) and debug:
-                print("done with another chunk_size: ", chunk_size)
+            # counter += 1
+            # if (counter % chunk_size == 0) and debug:
+                # print("done with another chunk_size: ", chunk_size)
 
     return sample_sum, sample_sum_sq, work
 
@@ -86,8 +86,8 @@ def mlmc(x: float, y: float, f, g, dt0: float, epsilon: float, debug=False):
         var_cost_sq_sum = np.sum(np.sqrt(variances * cost_at_level))
         if debug:
             print("Samples per level:", N_samples)
-            print("Variance per level: ", variances)
-            print("Cost per sample per level: ", cost_at_level)
+            print("Variance per level:\n", variances)
+            print("Expectation:\n", sample_sums/N_samples)
         # check how many samples are needed for each level
         for level in range(max_level):
             # optimal numbers of samples per Lagrange multiplier
@@ -112,7 +112,7 @@ def mlmc(x: float, y: float, f, g, dt0: float, epsilon: float, debug=False):
         # find convergence by linear fit
         # Specifically convergence rate alpha of the error,
         # beta of the variance and gamma of the cost
-        x_conv = np.linspace(2, max_level, max_level-1)
+        x_conv = np.linspace(1, max_level-1, max_level-1)
         y_conv = np.log2(np.abs(sample_sums[1:max_level]/N_samples[1:max_level]))
         alpha, _ = np.polyfit(x_conv, y_conv, 1)
 
@@ -132,15 +132,17 @@ def mlmc(x: float, y: float, f, g, dt0: float, epsilon: float, debug=False):
         conv_lhs /= (2.0**(-alpha) - 1)
         if debug:
             print("the estimated error is: ", conv_lhs * np.sqrt(2))
-        if conv_lhs < epsilon/np.sqrt(2):
+        if conv_lhs < epsilon/2:
             converged = True
         else:
-            VarianceL = variances[max_level-1] / (2**beta)
+            VarianceL = max(variances[max_level-1] / (2**beta), 1e-10)
             CostL = cost_at_level[max_level-1] * (2**gamma)
             var_cost_sq_sum += np.sqrt(CostL * VarianceL)
             optimal_n_samples = int(2/(epsilon**2)
                                     * np.sqrt(VarianceL / CostL)
                                     * var_cost_sq_sum)
+            optimal_n_samples = max(optimal_n_samples, 100)
+
             max_level += 1
             N_samples = np.append(N_samples, optimal_n_samples)
             N_samples_diff = np.append(N_samples_diff, optimal_n_samples)
