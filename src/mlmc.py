@@ -15,6 +15,7 @@ def generate_mlmc_data(x: float,
     work = 0
     sample_sum = 0
     sample_sum_sq = 0
+    counter = 0
     if debug:
         print("generating ", N_samples, " samples")
 
@@ -33,13 +34,16 @@ def generate_mlmc_data(x: float,
             sample_sum += sample[0]
             sample_sum_sq += sample[0]**2
             work += sample[1]
+            counter += 1
+            if (counter % chunk_size == 0) and debug:
+                print("done with another chunk_size: ", chunk_size)
 
     return sample_sum, sample_sum_sq, work
 
 
 def mlmc(x: float, y: float, f, g, dt0: float, epsilon: float, debug=False):
     max_level = 3
-    N_start = 100
+    N_start = 1000
     N_samples = np.full(max_level, N_start)
     N_samples_diff = np.full(max_level, N_start)
 
@@ -51,12 +55,14 @@ def mlmc(x: float, y: float, f, g, dt0: float, epsilon: float, debug=False):
     sample_sums[0], sample_sums_sq[0], costs[0] = generate_mlmc_data(x, y,
                                                                      f, g,
                                                                      dt0, 0,
-                                                                     N_samples[0])
+                                                                     N_samples[0],
+                                                                     debug=debug)
 
     sample_sums[1], sample_sums_sq[1], costs[1] = generate_mlmc_data(x, y,
                                                                      f, g,
                                                                      dt0/2, 1,
-                                                                     N_samples[1])
+                                                                     N_samples[1],
+                                                                     debug=debug)
 
     while not converged:
         dt_finest = dt0/(2**(max_level - 1))
@@ -64,7 +70,8 @@ def mlmc(x: float, y: float, f, g, dt0: float, epsilon: float, debug=False):
                                                              f, g,
                                                              dt_finest,
                                                              max_level,
-                                                             N_samples[max_level - 1])
+                                                             N_samples_diff[max_level - 1],
+                                                             debug=debug)
         costs[max_level - 1] = work
         sample_sums[max_level - 1] = sample_sum
         sample_sums_sq[max_level - 1] = sample_sum_sq
@@ -96,7 +103,8 @@ def mlmc(x: float, y: float, f, g, dt0: float, epsilon: float, debug=False):
             sample_sum, sample_sum_sq, work = generate_mlmc_data(x, y,
                                                                  f, g,
                                                                  dt, level,
-                                                                 N_samples_diff[level])
+                                                                 N_samples_diff[level],
+                                                                 debug=debug)
             costs[level] += work
             sample_sums[level] += sample_sum
             sample_sums_sq[level] += sample_sum_sq

@@ -79,6 +79,7 @@ parser.add_argument('-x', '--x', type=float, default=.5)
 parser.add_argument('-y', '--y', type=float, default=.5)
 parser.add_argument('--non_homogeneous', action='store_true')
 parser.add_argument('-w', '--plot_walks', action='store_true')
+parser.add_argument('--debug', action='store_true')
 
 args = parser.parse_args()
 
@@ -90,14 +91,16 @@ elif args.plot_walks:
 elif args.non_homogeneous:
     res, cost, max_level = mlmc(args.x, args.y,
                                 non_hom_test, non_hom_test,
-                                args.dt0, args.epsilon)
+                                args.dt0, args.epsilon,
+                                debug=args.debug)
     print(res, " vs. ", non_hom_test(args.x, args.y))
     print("had to generate ", cost, " random numbers")
     print("and went up to level ", max_level)
 else:
     res, cost, max_level = mlmc(args.x, args.y,
                                 test_bound, test_rhs,
-                                args.dt0, args.epsilon)
+                                args.dt0, args.epsilon,
+                                debug=args.debug)
     print(res, " vs. ", test_phi(args.x, args.y))
     print("had to generate ", cost, " random numbers")
     print("and went up to level ", max_level)
