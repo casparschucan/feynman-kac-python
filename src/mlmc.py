@@ -81,7 +81,7 @@ def mlmc(x: float, y: float, f, g, dt0: float, epsilon: float, debug=False):
         # array containing the variance for every level
         variances = (sample_sums_sq / N_samples
                      - (sample_sums / N_samples)**2)
-
+        variances = (sample_sums_sq / N_samples - (sample_sums / N_samples)**2) * N_samples / (N_samples - 1)
         # the sum $\sum_{l=0}^{L}\sqrt(V_l*C_l)$
         var_cost_sq_sum = np.sum(np.sqrt(variances * cost_at_level))
         if debug:
@@ -115,6 +115,7 @@ def mlmc(x: float, y: float, f, g, dt0: float, epsilon: float, debug=False):
         x_conv = np.linspace(1, max_level-1, max_level-1)
         y_conv = np.log2(np.abs(sample_sums[1:max_level]/N_samples[1:max_level]))
         alpha, _ = np.polyfit(x_conv, y_conv, 1)
+        alpha = min(alpha, -.5)
 
         y_var = -np.log2(variances[1:])
         beta, _ = np.polyfit(x_conv, y_var, 1)
