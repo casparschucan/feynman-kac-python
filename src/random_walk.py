@@ -105,8 +105,17 @@ def feynman_kac_correlated(args, plot_walks=False):
     steps2_y = [y0]
 
     while fine_in or coarse_in:
-        eps_x1 = gen.normal(scale=np.sqrt(dt_fine))
+        if (not fine_in) and coarse_in:
+            x_fine = x0
+            y_fine = y0
+            fine_integral = 0
+            coarse_integral = 0
+            steps1_x = [x0]
+            steps2_x = [x0]
+            steps1_y = [y0]
+            steps2_y = [y0]
 
+        eps_x1 = gen.normal(scale=np.sqrt(dt_fine))
         eps_y1 = gen.normal(scale=np.sqrt(dt_fine))
 
         if fine_in:
