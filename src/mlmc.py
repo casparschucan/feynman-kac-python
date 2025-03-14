@@ -87,7 +87,7 @@ def mlmc(x: float, y: float, f, g, dt0: float, epsilon: float, debug=False):
         # check how many samples are needed for each level
         for level in range(max_level):
             # optimal numbers of samples per Lagrange multiplier
-            optimal_n_samples = int(2/(epsilon**2)
+            optimal_n_samples = int(1/(epsilon**2)
                                     * np.sqrt(variances[level]
                                               / cost_at_level[level])
                                     * var_cost_sq_sum)
@@ -105,6 +105,12 @@ def mlmc(x: float, y: float, f, g, dt0: float, epsilon: float, debug=False):
             sample_sums[level] += sample_sum
             sample_sums_sq[level] += sample_sum_sq
 
+        # array containing the cost per sample for every level
+        cost_at_level = costs / N_samples
+        # array containing the variance for every level with Bessel correction
+        variances = ((sample_sums_sq / N_samples -
+                      (sample_sums / N_samples)**2)
+                     * N_samples / (N_samples - 1))
         # find convergence by linear fit
         # Specifically convergence rate alpha of the error,
         # beta of the variance and gamma of the cost
@@ -135,7 +141,7 @@ def mlmc(x: float, y: float, f, g, dt0: float, epsilon: float, debug=False):
             VarianceL = max(variances[max_level-1] / (2**beta), 1e-10)
             CostL = cost_at_level[max_level-1] * (2**gamma)
             var_cost_sq_sum += np.sqrt(CostL * VarianceL)
-            optimal_n_samples = int(2/(epsilon**2)
+            optimal_n_samples = int(1/(epsilon**2)
                                     * np.sqrt(VarianceL / CostL)
                                     * var_cost_sq_sum)
             optimal_n_samples = max(optimal_n_samples, 100)
