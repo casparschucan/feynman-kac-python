@@ -15,14 +15,13 @@ def generate_mlmc_data(x: float,
     work = 0
     sample_sum = 0
     sample_sum_sq = 0
-    # counter = 0
-    # if debug:
-        # print("generating ", N_samples, " samples")
+    if debug:
+        print("generating ", N_samples, " samples")
 
     n_procs = 10
 
-    chunk_size = max(N_samples // n_procs, 10)
-    chunk_size = min(chunk_size, 100000)
+    chunk_size = max(N_samples // (10 * n_procs), 10)
+    chunk_size = min(chunk_size, 10000)
 
     with Pool(processes=n_procs) as pool:
 
@@ -34,9 +33,6 @@ def generate_mlmc_data(x: float,
             sample_sum += sample[0]
             sample_sum_sq += sample[0]**2
             work += sample[1]
-            # counter += 1
-            # if (counter % chunk_size == 0) and debug:
-                # print("done with another chunk_size: ", chunk_size)
 
     return sample_sum, sample_sum_sq, work
 
@@ -78,16 +74,16 @@ def mlmc(x: float, y: float, f, g, dt0: float, epsilon: float, debug=False):
 
         # array containing the cost per sample for every level
         cost_at_level = costs / N_samples
-        # array containing the variance for every level
-        variances = (sample_sums_sq / N_samples
-                     - (sample_sums / N_samples)**2)
-        variances = (sample_sums_sq / N_samples - (sample_sums / N_samples)**2) * N_samples / (N_samples - 1)
+        # array containing the variance for every level with Bessel correction
+        variances = ((sample_sums_sq / N_samples -
+                      (sample_sums / N_samples)**2)
+                     * N_samples / (N_samples - 1))
         # the sum $\sum_{l=0}^{L}\sqrt(V_l*C_l)$
         var_cost_sq_sum = np.sum(np.sqrt(variances * cost_at_level))
         if debug:
-            print("Samples per level:", N_samples)
+            # print("Samples per level:", N_samples)
             print("Variance per level:\n", variances)
-            print("Expectation:\n", sample_sums/N_samples)
+            # print("Expectation:\n", sample_sums/N_samples)
         # check how many samples are needed for each level
         for level in range(max_level):
             # optimal numbers of samples per Lagrange multiplier

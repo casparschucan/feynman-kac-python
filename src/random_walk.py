@@ -2,7 +2,25 @@ import numpy as np
 from visualize import visualize_random_walk
 import os
 from datetime import datetime
+import secrets
+import threading
 
+
+# Create a global dictionary to store thread-local RNGs
+_thread_local_rngs = {}
+
+
+def get_rng():
+    """Get a thread-local random number generator."""
+    thread_id = threading.get_ident()
+
+    if thread_id not in _thread_local_rngs:
+        # Create a new RNG for this thread
+        # Use secrets for cryptographically strong randomness
+        seed = secrets.randbits(64) ^ os.getpid()
+        _thread_local_rngs[thread_id] = np.random.default_rng(seed)
+
+    return _thread_local_rngs[thread_id]
 # a function samples a random walk starting from a specific point
 # and returns the needed values for feynman-kac poisson eval on the unit square
 
@@ -15,10 +33,7 @@ def feynman_kac_sample_with_work(x0: float, y0: float, f, g, dt):
     num_steps = 0
 
     # Convert timestamp to microseconds (integer)
-    timestamp = int(datetime.timestamp(datetime.now()) * 1e6)
-    process_id = os.getpid()  # Get process ID
-    rng_seed = timestamp ^ process_id
-    gen = np.random.default_rng(rng_seed)
+    gen = get_rng()
 
     while x > 0 and y > 0 and x < 1 and y < 1:
         integral += g(x, y)*dt
@@ -116,12 +131,12 @@ def feynman_kac_correlated(args, plot_walks=False):
         eps_x1 = gen.normal(scale=np.sqrt(dt_fine))
 
         eps_y1 = gen.normal(scale=np.sqrt(dt_fine))
+        num_steps += 1
 
         if fine_in:
             fine_integral += g(x_fine, y_fine)*dt_fine
             x_fine += eps_x1
             y_fine += eps_y1
-            num_steps += 1
             if plot_walks:
                 steps1_x.append(x_fine)
                 steps1_y.append(y_fine)
@@ -132,12 +147,12 @@ def feynman_kac_correlated(args, plot_walks=False):
         eps_x2 = gen.normal(scale=np.sqrt(dt_fine))
 
         eps_y2 = gen.normal(scale=np.sqrt(dt_fine))
+        num_steps += 1
 
         if fine_in:
             fine_integral += g(x_fine, y_fine)*dt_fine
             x_fine += eps_x2
             y_fine += eps_y2
-            num_steps += 1
             if plot_walks:
                 steps1_x.append(x_fine)
                 steps1_y.append(y_fine)
@@ -149,13 +164,14 @@ def feynman_kac_correlated(args, plot_walks=False):
 
         eps_y_coarse = (eps_y1 + eps_y2)
 
-        # eps_x_noise = gen.normal(scale=dt_fine**4)
-        # eps_y_noise = gen.normal(scale=dt_fine**4)
+        # power = 1
+        # eps_x_noise = gen.normal(scale=dt_fine**power)
+        # eps_y_noise = gen.normal(scale=dt_fine**power)
 
         if coarse_in:
             coarse_integral += g(x_coarse, y_coarse)*dt_coarse
-            x_coarse += eps_x_coarse #+ eps_x_noise
-            y_coarse += eps_y_coarse #+ eps_y_noise
+            x_coarse += eps_x_coarse  # + eps_x_noise
+            y_coarse += eps_y_coarse  # + eps_y_noise
             if plot_walks:
                 steps2_x.append(x_coarse)
                 steps2_y.append(y_coarse)
