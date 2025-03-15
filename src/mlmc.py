@@ -43,6 +43,8 @@ def mlmc(x: float, y: float, f, g, dt0: float, epsilon: float, debug=False):
     N_samples = np.full(max_level, N_start)
     N_samples_diff = np.full(max_level, N_start)
 
+    dt_ratio = 4
+
     converged = False
     costs = np.zeros(max_level)
     sample_sums = np.zeros(max_level)
@@ -52,7 +54,7 @@ def mlmc(x: float, y: float, f, g, dt0: float, epsilon: float, debug=False):
 
         # generate data based on last optimal estimate
         for level in range(max_level):
-            dt = dt0/2**level
+            dt = dt0/dt_ratio**level
             # add the needed samples
             sample_sum, sample_sum_sq, work = generate_mlmc_data(x, y,
                                                                  f, g,
@@ -88,7 +90,7 @@ def mlmc(x: float, y: float, f, g, dt0: float, epsilon: float, debug=False):
             N_samples_diff[level] = max(0, optimal_n_samples - N_samples[level])
             N_samples[level] = max(N_samples[level], optimal_n_samples)
 
-            dt = dt0/2**level
+            dt = dt0/dt_ratio**level
             # add the needed samples
             sample_sum, sample_sum_sq, work = generate_mlmc_data(x, y,
                                                                  f, g,

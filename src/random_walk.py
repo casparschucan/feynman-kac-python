@@ -98,6 +98,13 @@ def project_to_domain_edge(x, y):
     return x, y
 
 
+def generate_fine_random(N_samples, dt):
+    gen = get_rng()
+    dx = np.array([gen.normal(scale=np.sqrt(dt)) for _ in range(N_samples)])
+    dy = np.array([gen.normal(scale=np.sqrt(dt)) for _ in range(N_samples)])
+    return dx, dy
+
+
 def feynman_kac_correlated(args, plot_walks=False):
     x0, y0, f, g, dt_fine, level = args
     if (level == 0):
@@ -111,58 +118,36 @@ def feynman_kac_correlated(args, plot_walks=False):
     coarse_integral = 0
     fine_integral = 0
 
-    dt_coarse = 2*dt_fine
+    dt_ratio = 4
+    dt_coarse = dt_ratio*dt_fine
     num_steps = 0
 
     fine_in = True
     coarse_in = True
 
-    # Convert timestamp to microseconds (integer)
-    timestamp = int(datetime.timestamp(datetime.now()) * 1e6)
-    process_id = os.getpid()  # Get process ID
-    rng_seed = timestamp ^ process_id
-    gen = np.random.default_rng(rng_seed)
     steps1_x = [x0]
     steps2_x = [x0]
     steps1_y = [y0]
     steps2_y = [y0]
 
     while fine_in or coarse_in:
-        eps_x1 = gen.normal(scale=np.sqrt(dt_fine))
-
-        eps_y1 = gen.normal(scale=np.sqrt(dt_fine))
-        num_steps += 1
-
-        if fine_in:
+        eps_x, eps_y = generate_fine_random(dt_ratio, dt_fine)
+        num_steps += dt_ratio
+        for i in range(dt_ratio):
+            if not fine_in:
+                break
             fine_integral += g(x_fine, y_fine)*dt_fine
-            x_fine += eps_x1
-            y_fine += eps_y1
+            x_fine += eps_x[i]
+            y_fine += eps_y[i]
             if plot_walks:
                 steps1_x.append(x_fine)
                 steps1_y.append(y_fine)
 
-        if not is_in_domain(x_fine, y_fine):
-            fine_in = False
+            fine_in = is_in_domain(x_fine, y_fine)
 
-        eps_x2 = gen.normal(scale=np.sqrt(dt_fine))
+        eps_x_coarse = eps_x.sum()
 
-        eps_y2 = gen.normal(scale=np.sqrt(dt_fine))
-        num_steps += 1
-
-        if fine_in:
-            fine_integral += g(x_fine, y_fine)*dt_fine
-            x_fine += eps_x2
-            y_fine += eps_y2
-            if plot_walks:
-                steps1_x.append(x_fine)
-                steps1_y.append(y_fine)
-
-        if not is_in_domain(x_fine, y_fine):
-            fine_in = False
-
-        eps_x_coarse = (eps_x1 + eps_x2)
-
-        eps_y_coarse = (eps_y1 + eps_y2)
+        eps_y_coarse = eps_y.sum()
 
         # power = 1
         # eps_x_noise = gen.normal(scale=dt_fine**power)
