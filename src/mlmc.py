@@ -48,29 +48,20 @@ def mlmc(x: float, y: float, f, g, dt0: float, epsilon: float, debug=False):
     sample_sums = np.zeros(max_level)
     sample_sums_sq = np.zeros(max_level)
 
-    sample_sums[0], sample_sums_sq[0], costs[0] = generate_mlmc_data(x, y,
-                                                                     f, g,
-                                                                     dt0, 0,
-                                                                     N_samples[0],
-                                                                     debug=debug)
-
-    sample_sums[1], sample_sums_sq[1], costs[1] = generate_mlmc_data(x, y,
-                                                                     f, g,
-                                                                     dt0/2, 1,
-                                                                     N_samples[1],
-                                                                     debug=debug)
-
     while not converged:
-        dt_finest = dt0/(2**(max_level - 1))
-        sample_sum, sample_sum_sq, work = generate_mlmc_data(x, y,
-                                                             f, g,
-                                                             dt_finest,
-                                                             max_level,
-                                                             N_samples_diff[max_level - 1],
-                                                             debug=debug)
-        costs[max_level - 1] = work
-        sample_sums[max_level - 1] = sample_sum
-        sample_sums_sq[max_level - 1] = sample_sum_sq
+
+        # generate data based on last optimal estimate
+        for level in range(max_level):
+            dt = dt0/2**level
+            # add the needed samples
+            sample_sum, sample_sum_sq, work = generate_mlmc_data(x, y,
+                                                                 f, g,
+                                                                 dt, level,
+                                                                 N_samples_diff[level],
+                                                                 debug=debug)
+            costs[level] += work
+            sample_sums[level] += sample_sum
+            sample_sums_sq[level] += sample_sum_sq
 
         # array containing the cost per sample for every level
         cost_at_level = costs / N_samples
@@ -84,13 +75,16 @@ def mlmc(x: float, y: float, f, g, dt0: float, epsilon: float, debug=False):
             # print("Samples per level:", N_samples)
             print("Variance per level:\n", variances)
             # print("Expectation:\n", sample_sums/N_samples)
-        # check how many samples are needed for each level
+
+        # check how many samples are needed for each level and add samples
+        # when necessary
         for level in range(max_level):
             # optimal numbers of samples per Lagrange multiplier
             optimal_n_samples = int(1/(epsilon**2)
                                     * np.sqrt(variances[level]
                                               / cost_at_level[level])
                                     * var_cost_sq_sum)
+            # update additional samples needed
             N_samples_diff[level] = max(0, optimal_n_samples - N_samples[level])
             N_samples[level] = max(N_samples[level], optimal_n_samples)
 
@@ -138,20 +132,30 @@ def mlmc(x: float, y: float, f, g, dt0: float, epsilon: float, debug=False):
         if conv_lhs < epsilon/2:
             converged = True
         else:
-            VarianceL = max(variances[max_level-1] / (2**beta), 1e-10)
-            CostL = cost_at_level[max_level-1] * (2**gamma)
-            var_cost_sq_sum += np.sqrt(CostL * VarianceL)
-            optimal_n_samples = int(1/(epsilon**2)
-                                    * np.sqrt(VarianceL / CostL)
-                                    * var_cost_sq_sum)
-            optimal_n_samples = max(optimal_n_samples, 100)
+            variances = np.append(variances,
+                                  max(variances[max_level-1] / (2**beta),
+                                      1e-10))
+            cost_at_level = np.append(cost_at_level,
+                                      cost_at_level[max_level-1] * (2**gamma))
+            var_cost_sq_sum += np.sqrt(cost_at_level[max_level]
+                                       * variances[max_level])
 
             max_level += 1
-            N_samples = np.append(N_samples, optimal_n_samples)
-            N_samples_diff = np.append(N_samples_diff, optimal_n_samples)
+            N_samples = np.append(N_samples, 0)
+            N_samples_diff = np.append(N_samples_diff, 0)
             sample_sums = np.append(sample_sums, 0)
             sample_sums_sq = np.append(sample_sums_sq, 0)
             costs = np.append(costs, 0)
+
+            for level in range(max_level):
+                # optimal numbers of samples per Lagrange multiplier
+                optimal_n_samples = int(1/(epsilon**2)
+                                        * np.sqrt(variances[level]
+                                                  / cost_at_level[level])
+                                        * var_cost_sq_sum)
+                N_samples_diff[level] = max(0,
+                                            optimal_n_samples - N_samples[level])
+                N_samples[level] = max(N_samples[level], optimal_n_samples)
 
     if debug:
         print("Expectation value per level: ", sample_sums/N_samples)
