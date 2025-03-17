@@ -57,11 +57,11 @@ def feynman_kac_sample_with_work(x0: float, y0: float, f, g, dt):
 
     integral += f(x, y)
 
-    return integral, num_steps
+    return integral, num_steps, False
 
 
 def feynman_kac_sample(x0: float, y0: float, f, g, dt):
-    integral, _ = feynman_kac_sample_with_work(x0, y0, f, g, dt)
+    integral, _, _ = feynman_kac_sample_with_work(x0, y0, f, g, dt)
     return integral
 
 
@@ -118,12 +118,13 @@ def feynman_kac_correlated(args, plot_walks=False):
     coarse_integral = 0
     fine_integral = 0
 
-    dt_ratio = 4
+    dt_ratio = 16
     dt_coarse = dt_ratio*dt_fine
     num_steps = 0
 
     fine_in = True
     coarse_in = True
+    uncorrelated = False
 
     steps1_x = [x0]
     steps2_x = [x0]
@@ -131,6 +132,8 @@ def feynman_kac_correlated(args, plot_walks=False):
     steps2_y = [y0]
 
     while fine_in or coarse_in:
+        if not fine_in:
+            uncorrelated = True
         eps_x, eps_y = generate_fine_random(dt_ratio, dt_fine)
         num_steps += dt_ratio
         for i in range(dt_ratio):
@@ -173,4 +176,4 @@ def feynman_kac_correlated(args, plot_walks=False):
     coarse_integral += f(x_coarse, y_coarse)
     integral = fine_integral - coarse_integral
 
-    return integral, num_steps
+    return integral, num_steps, uncorrelated
