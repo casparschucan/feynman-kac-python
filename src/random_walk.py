@@ -122,6 +122,13 @@ def feynman_kac_correlated(args, plot_walks=False):
     dt_coarse = dt_ratio*dt_fine
     num_steps = 0
 
+    # coarse_integral, work, _ = feynman_kac_sample_with_work(x0, y0,
+                                                            # f, g,
+                                                            # dt_coarse)
+    # fine_integral, work2, _ = feynman_kac_sample_with_work(x0, y0,
+                                                           # f, g,
+                                                           # dt_fine)
+    # return fine_integral - coarse_integral, work + work2, True
     fine_in = True
     coarse_in = True
     uncorrelated = False
