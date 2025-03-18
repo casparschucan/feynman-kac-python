@@ -155,6 +155,8 @@ def mlmc(x: float, y: float, f, g, dt0: float, epsilon: float, debug=False):
                                         * np.sqrt(variances[level]
                                                   / cost_at_level[level])
                                         * var_cost_sq_sum)
+                if level == max_level - 1:
+                    optimal_n_samples = max(optimal_n_samples, 1000)
                 N_samples_diff[level] = max(0,
                                             optimal_n_samples - N_samples[level])
                 N_samples[level] = max(N_samples[level], optimal_n_samples)
