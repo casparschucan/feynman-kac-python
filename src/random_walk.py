@@ -118,7 +118,7 @@ def feynman_kac_correlated(args, plot_walks=False):
     coarse_integral = 0
     fine_integral = 0
 
-    dt_ratio = 4
+    dt_ratio = 2
     dt_coarse = dt_ratio*dt_fine
     num_steps = 0
 

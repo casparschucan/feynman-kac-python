@@ -37,13 +37,57 @@ def generate_mlmc_data(x: float,
     return sample_sum, sample_sum_sq, work
 
 
+def estimate_convergence_rates(max_level, sample_sums, variances, cost_at_level, N_samples):
+    # find convergence by linear fit
+    # Specifically convergence rate alpha of the error,
+    # beta of the variance and gamma of the cost
+    # Treat level 0 as non-contributing since MLMC is a telescoping sum,
+    # so we only consider levels 1 to max_level-1 (assuming max_level >= 2)
+    x_conv = np.linspace(1, max_level - 1, max_level - 1)
+    y_conv = np.log2(np.abs(sample_sums[1:max_level] / N_samples[1:max_level]))
+
+    # Use the original fit if fewer than 4 levels are available
+    if len(x_conv) < 3:
+        alpha, _ = np.polyfit(x_conv, y_conv, 1)
+        alpha = min(alpha, -0.5)
+
+    candidate_alphas = []
+    # Try dropping each level (from level 1 to max_level-1) one at a time.
+    # Since x_conv and y_conv correspond only to levels 1 through max_level-1,
+    # iterate over their indices.
+    for i in range(len(x_conv)):
+        # Create a boolean mask that excludes the candidate outlier level
+        mask = np.ones(len(x_conv), dtype=bool)
+        mask[i] = False
+        candidate_x = x_conv[mask]
+        candidate_y = y_conv[mask]
+        # Compute the linear fit over the remaining levels
+        alpha_candidate, _ = np.polyfit(candidate_x, candidate_y, 1)
+        candidate_alphas.append(alpha_candidate)
+
+    best_alpha = max(candidate_alphas)
+
+    # Apply the safety lower bound (as in the original code)
+    best_alpha = min(best_alpha, -0.5)
+
+    y_var = -np.log2(variances[1:])
+    beta, _ = np.polyfit(x_conv, y_var, 1)
+    beta = max(beta, .5)
+
+    y_cost = np.log2(cost_at_level[1:])
+    gamma, _ = np.polyfit(x_conv, y_cost, 1)
+    gamma = max(gamma, .5)
+
+    return best_alpha, beta, gamma
+
+
 def mlmc(x: float, y: float, f, g, dt0: float, epsilon: float, debug=False):
     max_level = 3
     N_start = 1000
     N_samples = np.full(max_level, N_start)
     N_samples_diff = np.full(max_level, N_start)
 
-    dt_ratio = 4
+    dt_ratio = 2
 
     converged = False
     costs = np.zeros(max_level)
@@ -107,21 +151,12 @@ def mlmc(x: float, y: float, f, g, dt0: float, epsilon: float, debug=False):
         variances = ((sample_sums_sq / N_samples -
                       (sample_sums / N_samples)**2)
                      * N_samples / (N_samples - 1))
-        # find convergence by linear fit
-        # Specifically convergence rate alpha of the error,
-        # beta of the variance and gamma of the cost
-        x_conv = np.linspace(1, max_level-1, max_level-1)
-        y_conv = np.log2(np.abs(sample_sums[1:max_level]/N_samples[1:max_level]))
-        alpha, _ = np.polyfit(x_conv, y_conv, 1)
-        alpha = min(alpha, -.5)
 
-        y_var = -np.log2(variances[1:])
-        beta, _ = np.polyfit(x_conv, y_var, 1)
-        beta = max(beta, .5)
-
-        y_cost = np.log2(cost_at_level[1:])
-        gamma, _ = np.polyfit(x_conv, y_cost, 1)
-        gamma = max(gamma, .5)
+        alpha, beta, gamma = estimate_convergence_rates(max_level, 
+                                                        sample_sums,
+                                                        variances, 
+                                                        cost_at_level,
+                                                        N_samples)
 
         if debug:
             print("Measured convergence rate ", -alpha)
