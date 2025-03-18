@@ -129,8 +129,9 @@ def feynman_kac_correlated(args, plot_walks=False):
     steps2_x = [x0]
     steps1_y = [y0]
     steps2_y = [y0]
+    gen = get_rng()
 
-    while fine_in or coarse_in:
+    while fine_in and coarse_in:
         eps_x, eps_y = generate_fine_random(dt_ratio, dt_fine)
         num_steps += dt_ratio
         for i in range(dt_ratio):
@@ -145,18 +146,21 @@ def feynman_kac_correlated(args, plot_walks=False):
 
             fine_in = is_in_domain(x_fine, y_fine)
 
-        eps_x_coarse = eps_x.sum()
+        power = 1
+        eps_x_noise = gen.normal(scale=dt_fine**power)
+        eps_y_noise = gen.normal(scale=dt_fine**power)
 
-        eps_y_coarse = eps_y.sum()
+        normalization_factor = np.sqrt(dt_ratio * dt_fine /
+                                       (dt_ratio * dt_fine + dt_fine**2))
 
-        # power = 1
-        # eps_x_noise = gen.normal(scale=dt_fine**power)
-        # eps_y_noise = gen.normal(scale=dt_fine**power)
+        eps_x_coarse = normalization_factor * (eps_x.sum() + eps_x_noise)
+
+        eps_y_coarse = normalization_factor * (eps_y.sum() + eps_y_noise)
 
         if coarse_in:
             coarse_integral += g(x_coarse, y_coarse)*dt_coarse
-            x_coarse += eps_x_coarse  # + eps_x_noise
-            y_coarse += eps_y_coarse  # + eps_y_noise
+            x_coarse += eps_x_coarse
+            y_coarse += eps_y_coarse
             if plot_walks:
                 steps2_x.append(x_coarse)
                 steps2_y.append(y_coarse)
