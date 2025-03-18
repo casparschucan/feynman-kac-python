@@ -43,7 +43,7 @@ def mlmc(x: float, y: float, f, g, dt0: float, epsilon: float, debug=False):
     N_samples = np.full(max_level, N_start)
     N_samples_diff = np.full(max_level, N_start)
 
-    dt_ratio = 4
+    dt_ratio = 2
 
     converged = False
     costs = np.zeros(max_level)
