@@ -106,7 +106,7 @@ def generate_fine_random(N_samples, dt):
 
 
 def feynman_kac_correlated(args, plot_walks=False):
-    x0, y0, f, g, dt_fine, level = args
+    x0, y0, f, g, dt_fine, level, dt_ratio = args
     if (level == 0):
         return feynman_kac_sample_with_work(x0, y0, f, g, dt_fine)
 
@@ -118,7 +118,6 @@ def feynman_kac_correlated(args, plot_walks=False):
     coarse_integral = 0
     fine_integral = 0
 
-    dt_ratio = 2
     dt_coarse = dt_ratio*dt_fine
     num_steps = 0
 

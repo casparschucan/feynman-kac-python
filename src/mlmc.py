@@ -11,6 +11,7 @@ def generate_mlmc_data(x: float,
                        dt_fine: float,
                        level: int,
                        N_samples: int,
+                       dt_ratio,
                        debug=False):
     work = 0
     sample_sum = 0
@@ -26,7 +27,7 @@ def generate_mlmc_data(x: float,
     with Pool(processes=n_procs) as pool:
 
         sample_results = pool.imap_unordered(feynman_kac_correlated,
-                                         ((x, y, f, g, dt_fine, level) for _ in range(N_samples)),
+                                         ((x, y, f, g, dt_fine, level, dt_ratio) for _ in range(N_samples)),
                                          chunksize=chunk_size)
 
         for sample in sample_results:
@@ -37,13 +38,12 @@ def generate_mlmc_data(x: float,
     return sample_sum, sample_sum_sq, work
 
 
-def mlmc(x: float, y: float, f, g, dt0: float, epsilon: float, debug=False):
+def mlmc(x: float, y: float, f, g, dt0: float, epsilon: float,
+         debug=False, dt_ratio=2):
     max_level = 3
     N_start = 1000
     N_samples = np.full(max_level, N_start)
     N_samples_diff = np.full(max_level, N_start)
-
-    dt_ratio = 2
 
     converged = False
     costs = np.zeros(max_level)
@@ -60,6 +60,7 @@ def mlmc(x: float, y: float, f, g, dt0: float, epsilon: float, debug=False):
                                                                  f, g,
                                                                  dt, level,
                                                                  N_samples_diff[level],
+                                                                 dt_ratio,
                                                                  debug=debug)
             costs[level] += work
             sample_sums[level] += sample_sum
@@ -96,6 +97,7 @@ def mlmc(x: float, y: float, f, g, dt0: float, epsilon: float, debug=False):
                                                                  f, g,
                                                                  dt, level,
                                                                  N_samples_diff[level],
+                                                                 dt_ratio,
                                                                  debug=debug)
             costs[level] += work
             sample_sums[level] += sample_sum
@@ -155,6 +157,7 @@ def mlmc(x: float, y: float, f, g, dt0: float, epsilon: float, debug=False):
                                         * np.sqrt(variances[level]
                                                   / cost_at_level[level])
                                         * var_cost_sq_sum)
+                optimal_n_samples = max(optimal_n_samples, 1000)
                 N_samples_diff[level] = max(0,
                                             optimal_n_samples - N_samples[level])
                 N_samples[level] = max(N_samples[level], optimal_n_samples)
