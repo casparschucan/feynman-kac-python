@@ -78,6 +78,48 @@ def feynman_kac_eval(x, y, N, dt0):
     plt.show()
 
 
+def check_mlmc_speedup(N, epsilon, dt0, x=.5, y=.5):
+    errs = np.zeros(N)
+    expectation = np.zeros(N)
+    cost = np.zeros(N)
+    max_level = np.zeros(N)
+    speedup = np.zeros(N)
+    for i in range(N):
+        expectation[i], cost[i], max_level[i], max_cost = mlmc(x, y,
+                                                     test_bound, test_rhs, 
+                                                     dt0, epsilon)
+        errs[i] = abs(test_phi(x, y) - expectation[i])
+
+        dt = dt0 * 2**int(-max_level[i])
+        Ntest = 10000
+        samples = generate_samples(x, y, Ntest, dt)
+        varL = samples.std()**2
+        NlCl = Ntest * max_cost
+        costs_sd = NlCl * varL / epsilon**2
+        speedup[i] = costs_sd / cost[i]
+    print(speedup)
+
+    return speedup.mean()
+
+
+def plot_mlmc_speedup(N, dt0, x=.5, y=.5):
+    epsilons = [.1, .05, .025, .0125]
+    speedups = []
+
+    for eps in epsilons:
+        speedups.append(check_mlmc_speedup(N, eps, dt0))
+
+    # Log-Log plot
+    plt.loglog(epsilons, speedups, label="speedup")
+    plt.title("average speedup")
+    plt.xlabel("target epsilon")
+    plt.ylabel("estimated speedup")
+    plt.legend()
+
+    # Show plot
+    plt.show()
+
+
 if __name__ == "__main__":
     # Set up argument parsing
     desc = 'Simulate feynman-kac poisson solver'
@@ -91,6 +133,7 @@ if __name__ == "__main__":
     parser.add_argument('--non_homogeneous', action='store_true')
     parser.add_argument('-w', '--plot_walks', action='store_true')
     parser.add_argument('--debug', action='store_true')
+    parser.add_argument('--speedup', action='store_true')
 
     args = parser.parse_args()
 
@@ -107,6 +150,8 @@ if __name__ == "__main__":
         print(res, " vs. ", non_hom_test(args.x, args.y))
         print("had to generate ", cost, " random numbers")
         print("and went up to level ", max_level)
+    elif args.speedup:
+        plot_mlmc_speedup(args.N_samples, args.dt0)
     else:
         res, cost, max_level, uncorrelated_ratios = mlmc(args.x, args.y,
                                                          test_bound, test_rhs,
