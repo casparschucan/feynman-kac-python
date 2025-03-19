@@ -28,8 +28,10 @@ def generate_mlmc_data(x: float,
     with Pool(processes=n_procs) as pool:
 
         sample_results = pool.imap_unordered(feynman_kac_correlated,
-                                         ((x, y, f, g, dt_fine, level, dt_ratio) for _ in range(N_samples)),
-                                         chunksize=chunk_size)
+                                             ((x, y, f, g,
+                                               dt_fine, level, dt_ratio)
+                                              for _ in range(N_samples)),
+                                             chunksize=chunk_size)
 
         for sample in sample_results:
             sample_sum += sample[0]
@@ -59,15 +61,15 @@ def mlmc(x: float, y: float, f, g, dt0: float, epsilon: float,
         for level in range(max_level):
             dt = dt0/dt_ratio**level
             # add the needed samples
-            sample_sum, sample_sum_sq, work, uncor = generate_mlmc_data(x, y,
-                                                                 f, g,
-                                                                 dt, level,
-                                                                 N_samples_diff[level],
-                                                                 dt_ratio,
-                                                                 debug=debug)
+            ss, ss_sq, work, uncor = generate_mlmc_data(x, y,
+                                                        f, g,
+                                                        dt, level,
+                                                        N_samples_diff[level],
+                                                        dt_ratio,
+                                                        debug=debug)
             costs[level] += work
-            sample_sums[level] += sample_sum
-            sample_sums_sq[level] += sample_sum_sq
+            sample_sums[level] += ss
+            sample_sums_sq[level] += ss_sq
             uncor_sums[level] += uncor
 
         # array containing the cost per sample for every level
@@ -92,20 +94,21 @@ def mlmc(x: float, y: float, f, g, dt0: float, epsilon: float,
                                               / cost_at_level[level])
                                     * var_cost_sq_sum)
             # update additional samples needed
-            N_samples_diff[level] = max(0, optimal_n_samples - N_samples[level])
+            N_samples_diff[level] = max(0,
+                                        optimal_n_samples - N_samples[level])
             N_samples[level] = max(N_samples[level], optimal_n_samples)
 
             dt = dt0/dt_ratio**level
             # add the needed samples
-            sample_sum, sample_sum_sq, work, uncor = generate_mlmc_data(x, y,
-                                                                 f, g,
-                                                                 dt, level,
-                                                                 N_samples_diff[level],
-                                                                 dt_ratio,
-                                                                 debug=debug)
+            ss, ss_sq, work, uncor = generate_mlmc_data(x, y,
+                                                        f, g,
+                                                        dt, level,
+                                                        N_samples_diff[level],
+                                                        dt_ratio,
+                                                        debug=debug)
             costs[level] += work
-            sample_sums[level] += sample_sum
-            sample_sums_sq[level] += sample_sum_sq
+            sample_sums[level] += ss
+            sample_sums_sq[level] += ss_sq
             uncor_sums[level] += uncor
 
         # array containing the cost per sample for every level
@@ -118,7 +121,8 @@ def mlmc(x: float, y: float, f, g, dt0: float, epsilon: float,
         # Specifically convergence rate alpha of the error,
         # beta of the variance and gamma of the cost
         x_conv = np.linspace(1, max_level-1, max_level-1)
-        y_conv = np.log2(np.abs(sample_sums[1:max_level]/N_samples[1:max_level]))
+        y_conv = np.log2(np.abs(sample_sums[1:max_level]
+                                / N_samples[1:max_level]))
         alpha, _ = np.polyfit(x_conv, y_conv, 1)
         alpha = min(alpha, -.5)
 
@@ -164,8 +168,8 @@ def mlmc(x: float, y: float, f, g, dt0: float, epsilon: float,
                                                   / cost_at_level[level])
                                         * var_cost_sq_sum)
                 optimal_n_samples = max(optimal_n_samples, 500)
-                N_samples_diff[level] = max(0,
-                                            optimal_n_samples - N_samples[level])
+                N_samples_diff[level] = max(0, (optimal_n_samples
+                                                - N_samples[level]))
 
                 N_samples[level] = max(N_samples[level], optimal_n_samples)
 

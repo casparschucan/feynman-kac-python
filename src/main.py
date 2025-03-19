@@ -27,21 +27,20 @@ def test_rhs(x, y):
 
 
 def generate_samples(x, y, N, dt):
-    if __name__ == '__main__':
 
-        samples = np.zeros(N)
-        sample_results = []
-        n_procs = 10
-        with Pool(processes=n_procs) as pool:
-            for i in range(N):
-                sample_results.append(pool.apply_async(feynman_kac_sample,
-                                                       args=(x,
-                                                             y,
-                                                             test_bound,
-                                                             test_rhs,
-                                                             dt)))
+    samples = np.zeros(N)
+    sample_results = []
+    n_procs = 10
+    with Pool(processes=n_procs) as pool:
+        for i in range(N):
+            sample_results.append(pool.apply_async(feynman_kac_sample,
+                                                   args=(x,
+                                                         y,
+                                                         test_bound,
+                                                         test_rhs,
+                                                         dt)))
 
-            samples = np.array([r.get() for r in tqdm(sample_results, total=N)])
+        samples = np.array([r.get() for r in tqdm(sample_results, total=N)])
 
     return samples
 
@@ -66,8 +65,8 @@ def feynman_kac_eval(x, y, N, dt0):
         plt.loglog(Ns, errs, label="average errors dt="+str(dt))
         plt.scatter(Ns, errs)
 
-        print("At position ", x, y, " we estimate a value of: ", samples.mean(),
-              " vs the true value of: ", test_phi(x, y),
+        print("At position ", x, y, " we estimate a value of: ",
+              samples.mean(), " vs the true value of: ", test_phi(x, y),
               " with a difference of: ", samples.mean() - test_phi(x, y))
 
     plt.loglog(Ns, Monte_Carlo_ideal, label="ideal convergence")
@@ -86,8 +85,9 @@ def check_mlmc_speedup(N, epsilon, dt0, x=.5, y=.5):
     speedup = np.zeros(N)
     for i in range(N):
         expectation[i], cost[i], max_level[i], max_cost = mlmc(x, y,
-                                                     test_bound, test_rhs, 
-                                                     dt0, epsilon)
+                                                               test_bound,
+                                                               test_rhs,
+                                                               dt0, epsilon)
         errs[i] = abs(test_phi(x, y) - expectation[i])
 
         dt = dt0 * 2**int(-max_level[i])
@@ -97,7 +97,6 @@ def check_mlmc_speedup(N, epsilon, dt0, x=.5, y=.5):
         NlCl = Ntest * max_cost
         costs_sd = NlCl * varL / epsilon**2
         speedup[i] = costs_sd / cost[i]
-    print(speedup)
 
     return speedup.mean()
 
@@ -140,13 +139,14 @@ if __name__ == "__main__":
     if args.standard_mc:
         feynman_kac_eval(args.x, args.y, args.N_samples, args.dt0)
     elif args.plot_walks:
-        feynman_kac_correlated((args.x, args.y, test_bound, test_rhs, args.dt0, 1),
+        feynman_kac_correlated((args.x, args.y, test_bound, test_rhs,
+                                args.dt0, 1),
                                plot_walks=True)
     elif args.non_homogeneous:
         res, cost, max_level, _ = mlmc(args.x, args.y,
-                                    non_hom_test, non_hom_test,
-                                    args.dt0, args.epsilon,
-                                    debug=args.debug)
+                                       non_hom_test, non_hom_test,
+                                       args.dt0, args.epsilon,
+                                       debug=args.debug)
         print(res, " vs. ", non_hom_test(args.x, args.y))
         print("had to generate ", cost, " random numbers")
         print("and went up to level ", max_level)

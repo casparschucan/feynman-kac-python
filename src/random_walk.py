@@ -1,7 +1,6 @@
 import numpy as np
 from visualize import visualize_random_walk
 import os
-from datetime import datetime
 import secrets
 import threading
 
@@ -121,13 +120,6 @@ def feynman_kac_correlated(args, plot_walks=False):
     dt_coarse = dt_ratio*dt_fine
     num_steps = 0
 
-    # coarse_integral, work, _ = feynman_kac_sample_with_work(x0, y0,
-                                                            # f, g,
-                                                            # dt_coarse)
-    # fine_integral, work2, _ = feynman_kac_sample_with_work(x0, y0,
-                                                           # f, g,
-                                                           # dt_fine)
-    # return fine_integral - coarse_integral, work + work2, True
     fine_in = True
     coarse_in = True
     uncorrelated = False
@@ -158,14 +150,10 @@ def feynman_kac_correlated(args, plot_walks=False):
 
         eps_y_coarse = eps_y.sum()
 
-        # power = 1
-        # eps_x_noise = gen.normal(scale=dt_fine**power)
-        # eps_y_noise = gen.normal(scale=dt_fine**power)
-
         if coarse_in:
             coarse_integral += g(x_coarse, y_coarse)*dt_coarse
-            x_coarse += eps_x_coarse  # + eps_x_noise
-            y_coarse += eps_y_coarse  # + eps_y_noise
+            x_coarse += eps_x_coarse
+            y_coarse += eps_y_coarse
             if plot_walks:
                 steps2_x.append(x_coarse)
                 steps2_y.append(y_coarse)
