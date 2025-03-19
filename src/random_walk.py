@@ -118,7 +118,7 @@ def feynman_kac_correlated(args, plot_walks=False):
     coarse_integral = 0
     fine_integral = 0
 
-    dt_ratio = 4
+    dt_ratio = 2
     dt_coarse = dt_ratio*dt_fine
     num_steps = 0
 
@@ -131,7 +131,7 @@ def feynman_kac_correlated(args, plot_walks=False):
     steps2_y = [y0]
     gen = get_rng()
 
-    while fine_in and coarse_in:
+    while fine_in or coarse_in:
         eps_x, eps_y = generate_fine_random(dt_ratio, dt_fine)
         num_steps += dt_ratio
         for i in range(dt_ratio):
@@ -151,7 +151,7 @@ def feynman_kac_correlated(args, plot_walks=False):
         eps_y_noise = gen.normal(scale=dt_fine**power)
 
         normalization_factor = np.sqrt(dt_ratio * dt_fine /
-                                       (dt_ratio * dt_fine + dt_fine**2))
+                                       (dt_ratio * dt_fine + dt_fine**(power*2)))
 
         eps_x_coarse = normalization_factor * (eps_x.sum() + eps_x_noise)
 
