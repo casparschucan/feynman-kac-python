@@ -28,7 +28,7 @@ def test_rhs(x, y):
 
 def generate_samples(x, y, N, dt):
 
-    samples = np.zeros(N)
+    samples = np.zeros((N, 2))
     sample_results = []
     n_procs = 10
     with Pool(processes=n_procs) as pool:
@@ -54,7 +54,9 @@ def feynman_kac_eval(x, y, N, dt0):
     print(dts)
 
     for dt in dts:
-        samples = generate_samples(x, y, N, dt)
+        samples_work = generate_samples(x, y, N, dt)
+
+        samples = samples_work[:, 0]
 
         errs = check_convergence(samples, Ns)
 
@@ -92,9 +94,13 @@ def check_mlmc_speedup(N, epsilon, dt0, x=.5, y=.5):
 
         dt = dt0 * 2**int(-max_level[i])
         Ntest = 10000
-        samples = generate_samples(x, y, Ntest, dt)
+        samples_work = generate_samples(x, y, Ntest, dt)
+
+        samples = samples_work[:, 0]
+        work = samples_work[:, 1]
+
         varL = samples.std()**2
-        NlCl = Ntest * max_cost
+        NlCl = work.sum()
         costs_sd = NlCl * varL / epsilon**2
         speedup[i] = costs_sd / cost[i]
 
@@ -114,6 +120,8 @@ def plot_mlmc_speedup(N, dt0, x=.5, y=.5):
     plt.xlabel("target epsilon")
     plt.ylabel("estimated speedup")
     plt.legend()
+
+    print("average measured speedups:\n", speedups)
 
     # Show plot
     plt.show()

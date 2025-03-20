@@ -60,8 +60,9 @@ def feynman_kac_sample_with_work(x0: float, y0: float, f, g, dt):
 
 
 def feynman_kac_sample(x0: float, y0: float, f, g, dt):
-    integral, _, _ = feynman_kac_sample_with_work(x0, y0, f, g, dt)
-    return integral
+    integral, num_steps, _ = feynman_kac_sample_with_work(x0, y0, f, g, dt)
+    ret = np.array([integral, num_steps])
+    return ret
 
 
 def is_in_domain(x, y):
