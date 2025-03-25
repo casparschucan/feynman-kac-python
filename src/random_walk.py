@@ -105,6 +105,23 @@ def generate_fine_random(N_samples, dt):
     return dx, dy
 
 
+def calculate_exit(x, y, delta_x, delta_y):
+    t = 1
+    if delta_x + x <= 0:
+        t = min(t, -x/delta_x)
+    elif delta_x + x >= 1:
+        t = min(t, (1-x)/delta_x)
+
+    if delta_y + y <= 0:
+        t = min(t, -y/delta_y)
+    elif delta_y + y >= 1:
+        t = min(t, (1-y)/delta_y)
+
+    if t < 0:
+        print("nooooo ", t)
+    return t, x + delta_x * t, y + delta_y * t
+
+
 def feynman_kac_correlated(args, plot_walks=False):
     x0, y0, f, g, dt_fine, level, dt_ratio = args
     if (level == 0):
@@ -138,6 +155,14 @@ def feynman_kac_correlated(args, plot_walks=False):
         for i in range(dt_ratio):
             if not fine_in:
                 break
+            if not is_in_domain(x_fine + eps_x[i], y_fine + eps_y[i]):
+                t, x, y = calculate_exit(x_fine, y_fine, eps_x[i], eps_y[i])
+                fine_in = False
+                fine_integral += t * dt_fine * g(x_fine, y_fine)
+                x_fine = x
+                y_fine = y
+                break
+
             fine_integral += g(x_fine, y_fine)*dt_fine
             x_fine += eps_x[i]
             y_fine += eps_y[i]
@@ -150,6 +175,13 @@ def feynman_kac_correlated(args, plot_walks=False):
         eps_x_coarse = eps_x.sum()
 
         eps_y_coarse = eps_y.sum()
+
+        if not is_in_domain(x_coarse + eps_x_coarse, y_coarse + eps_y_coarse):
+            t, x, y = calculate_exit(x_coarse, y_coarse, eps_x_coarse, eps_y_coarse)
+            coarse_in = False
+            coarse_integral += t * dt_coarse * g(dt_coarse, dt_coarse)
+            x_coarse = x
+            y_coarse = y
 
         if coarse_in:
             coarse_integral += g(x_coarse, y_coarse)*dt_coarse
