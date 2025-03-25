@@ -45,7 +45,7 @@ def generate_mlmc_data(x: float,
 def mlmc(x: float, y: float, f, g, dt0: float, epsilon: float,
          debug=False, dt_ratio=2):
     max_level = 3
-    N_start = 1000
+    N_start = 500
     N_samples = np.full(max_level, N_start)
     N_samples_diff = np.full(max_level, N_start)
 
@@ -167,7 +167,7 @@ def mlmc(x: float, y: float, f, g, dt0: float, epsilon: float,
                                         * np.sqrt(variances[level]
                                                   / cost_at_level[level])
                                         * var_cost_sq_sum)
-                optimal_n_samples = max(optimal_n_samples, 500)
+                optimal_n_samples = max(optimal_n_samples, N_start)
                 N_samples_diff[level] = max(0, (optimal_n_samples
                                                 - N_samples[level]))
 
