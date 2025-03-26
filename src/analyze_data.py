@@ -1,8 +1,5 @@
 import numpy as np
-
-
-def test_phi(x, y):
-    return np.sin(np.pi*x)*np.sin(np.pi*y)
+from test_functions import test_phi
 
 
 def calculate_std(N: int, samples):
@@ -21,7 +18,7 @@ def calculate_std(N: int, samples):
     return np.sqrt(Var)
 
 
-def calculate_mean_err(N: int, samples):
+def calculate_mean_err(N: int, samples, x=.5, y=.5, phi=test_phi):
     mean_err = 0
 
     N_tot = len(samples)
@@ -33,18 +30,18 @@ def calculate_mean_err(N: int, samples):
     for i in range(int(N_tot / N)):
         start_index: int = int(i*N)
         end_index: int = int((i+1)*N)
-        mean_err += abs(samples[start_index:end_index].mean() - test_phi(.5, .5))
+        mean_err += abs(samples[start_index:end_index].mean() - phi(x, y))
 
     mean_err /= N_tot/N
     return mean_err
 
 
-def check_convergence(samples, Ns):
+def check_convergence(samples, Ns, x=.5, y=.5, phi=test_phi):
     errs = np.zeros(len(Ns))
 
     for i in range(len(Ns)):
         N_cur = Ns[i]
 
-        errs[i] = calculate_mean_err(N_cur, samples)
+        errs[i] = calculate_mean_err(N_cur, samples, x, y, phi)
 
     return errs
