@@ -37,10 +37,17 @@ def feynman_kac_sample_with_work(x0: float, y0: float, f, g, dt):
     while x > 0 and y > 0 and x < 1 and y < 1:
         integral += g(x, y)*dt
         eps_x = gen.normal(scale=np.sqrt(dt))
-        x += eps_x
 
         eps_y = gen.normal(scale=np.sqrt(dt))
+        if not is_in_domain(x + eps_x, y + eps_y):
+            t, x_edge, y_edge = calculate_exit(x, y, eps_x, eps_y)
+            integral += t * dt * g(x, y)
+            x = x_edge
+            y = y_edge
+            break
+
         y += eps_y
+        x += eps_x
 
         num_steps += 1
 
