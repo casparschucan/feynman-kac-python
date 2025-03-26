@@ -140,7 +140,7 @@ if __name__ == "__main__":
             feynman_kac_eval(args.x, args.y, args.N_samples, args.dt0)
     elif args.plot_walks:
         feynman_kac_correlated((args.x, args.y, test_bound, test_rhs,
-                                args.dt0, 1),
+                                args.dt0, 1, 2),
                                plot_walks=True)
     elif args.non_homogeneous:
         res, cost, max_level, _ = mlmc(args.x, args.y,
