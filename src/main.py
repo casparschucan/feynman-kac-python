@@ -1,6 +1,9 @@
 from random_walk import feynman_kac_sample, feynman_kac_correlated
 from analyze_data import check_convergence
 from mlmc import mlmc
+from test_functions import test_cos, test_cos_rhs
+from test_functions import test_bound, test_rhs, test_phi
+from test_functions import non_hom_test
 
 from multiprocessing import Pool
 import matplotlib.pyplot as plt
@@ -10,23 +13,7 @@ from tqdm import tqdm
 import numpy as np
 
 
-def non_hom_test(x, y):
-    return np.sin(x)*np.sin(y)
-
-
-def test_phi(x, y):
-    return np.sin(np.pi*x)*np.sin(np.pi*y)
-
-
-def test_bound(x, y):
-    return 0
-
-
-def test_rhs(x, y):
-    return np.pi**2 * (np.sin(np.pi * x)*np.sin(np.pi * y))
-
-
-def generate_samples(x, y, N, dt):
+def generate_samples(x, y, N, dt, f=test_phi, g=test_rhs):
 
     samples = np.zeros((N, 2))
     sample_results = []
@@ -36,8 +23,8 @@ def generate_samples(x, y, N, dt):
             sample_results.append(pool.apply_async(feynman_kac_sample,
                                                    args=(x,
                                                          y,
-                                                         test_bound,
-                                                         test_rhs,
+                                                         f,
+                                                         g,
                                                          dt)))
 
         samples = np.array([r.get() for r in tqdm(sample_results, total=N)])
@@ -45,20 +32,21 @@ def generate_samples(x, y, N, dt):
     return samples
 
 
-def feynman_kac_eval(x, y, N, dt0):
-    Ns = 100 * np.logspace(0, 5, 6, base=2)
+def feynman_kac_eval(x, y, N, dt0, f=test_phi, g=test_rhs):
+    n = 8
+    Ns = 1000 * np.logspace(0, n-1, n, base=2)
 
-    Monte_Carlo_ideal = np.logspace(0, 5, 6, base=(1/np.sqrt(2)))
+    Monte_Carlo_ideal = np.logspace(0, n-1, n, base=(1/np.sqrt(2)))
 
     dts = dt0 * np.logspace(0, 5, 6, base=1/2)
     print(dts)
 
     for dt in dts:
-        samples_work = generate_samples(x, y, N, dt)
+        samples_work = generate_samples(x, y, N, dt, f, g)
 
         samples = samples_work[:, 0]
 
-        errs = check_convergence(samples, Ns)
+        errs = check_convergence(samples, Ns, x, y, f)
 
         run_id = str(N) + "_" + str(dt) + "_" + str(x) + "_" + str(y)
 
@@ -68,8 +56,8 @@ def feynman_kac_eval(x, y, N, dt0):
         plt.scatter(Ns, errs)
 
         print("At position ", x, y, " we estimate a value of: ",
-              samples.mean(), " vs the true value of: ", test_phi(x, y),
-              " with a difference of: ", samples.mean() - test_phi(x, y))
+              samples.mean(), " vs the true value of: ", f(x, y),
+              " with a difference of: ", samples.mean() - f(x, y))
 
     plt.loglog(Ns, Monte_Carlo_ideal, label="ideal convergence")
     plt.xlabel("N samples")
@@ -145,7 +133,11 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if args.standard_mc:
-        feynman_kac_eval(args.x, args.y, args.N_samples, args.dt0)
+        if args.non_homogeneous:
+            feynman_kac_eval(args.x, args.y, args.N_samples,
+                             args.dt0, test_cos, test_cos_rhs)
+        else:
+            feynman_kac_eval(args.x, args.y, args.N_samples, args.dt0)
     elif args.plot_walks:
         feynman_kac_correlated((args.x, args.y, test_bound, test_rhs,
                                 args.dt0, 1),
