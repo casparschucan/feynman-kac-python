@@ -1,5 +1,9 @@
 import numpy as np
 
+# The following provides a list of functions to test the poisson solver
+# where we get [func_name] as boundary condition/analytic solutio
+# and [func_name]_rhs as the right hand size for the PDE $-1/2 \Delta phi = g$
+
 
 def non_hom_test(x, y):
     return np.sin(x)*np.sin(y)
