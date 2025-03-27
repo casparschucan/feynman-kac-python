@@ -115,6 +115,14 @@ def plot_mlmc_speedup(N, dt0, x=.5, y=.5):
     plt.show()
 
 
+def output_mlmc_single_run(res, cost, max_level, uncorrelated_ratios, phi):
+    delta = abs(res - phi(args.x, args.y))
+    print(res, " vs. ", phi(args.x, args.y), " with a delta: ", delta)
+    print("had to generate ", cost, " random numbers")
+    print("and went up to level ", max_level)
+    print("uncorrelation ratios are:\n", uncorrelated_ratios)
+
+
 if __name__ == "__main__":
     # Set up argument parsing
     desc = 'Simulate feynman-kac poisson solver'
@@ -143,13 +151,14 @@ if __name__ == "__main__":
                                 args.dt0, 1, 2),
                                plot_walks=True)
     elif args.non_homogeneous:
-        res, cost, max_level, _ = mlmc(args.x, args.y,
-                                       non_hom_test, non_hom_test,
-                                       args.dt0, args.epsilon,
-                                       debug=args.debug)
-        print(res, " vs. ", non_hom_test(args.x, args.y))
-        print("had to generate ", cost, " random numbers")
-        print("and went up to level ", max_level)
+        res, cost, max_level, uncorrelated_ratios = mlmc(args.x, args.y,
+                                                         test_cos,
+                                                         test_cos_rhs,
+                                                         args.dt0,
+                                                         args.epsilon,
+                                                         debug=args.debug)
+        output_mlmc_single_run(res, cost, max_level,
+                               uncorrelated_ratios, test_cos)
     elif args.speedup:
         plot_mlmc_speedup(args.N_samples, args.dt0)
     else:
@@ -158,7 +167,5 @@ if __name__ == "__main__":
                                                          args.dt0,
                                                          args.epsilon,
                                                          debug=args.debug)
-        print(res, " vs. ", test_phi(args.x, args.y))
-        print("had to generate ", cost, " random numbers")
-        print("and went up to level ", max_level)
-        print("uncorrelation ratios are:\n", uncorrelated_ratios)
+        output_mlmc_single_run(res, cost, max_level,
+                               uncorrelated_ratios, test_phi)

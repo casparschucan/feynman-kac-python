@@ -22,4 +22,4 @@ def test_cos(x, y):
 
 
 def test_cos_rhs(x, y):
-    return np.pi**2 * np.cos(np.pi*x)*np.cos(np.pi*y)
+    return (np.pi**2) * np.cos(np.pi*x)*np.cos(np.pi*y)
