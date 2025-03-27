@@ -1,27 +1,6 @@
 import numpy as np
 from visualize import visualize_random_walk
-import os
-import secrets
-import threading
-
-
-# Create a global dictionary to store thread-local RNGs
-_thread_local_rngs = {}
-
-
-def get_rng():
-    """Get a thread-local random number generator."""
-    thread_id = threading.get_ident()
-
-    if thread_id not in _thread_local_rngs:
-        # Create a new RNG for this thread
-        # Use secrets for cryptographically strong randomness
-        seed = secrets.randbits(64) ^ os.getpid()
-        _thread_local_rngs[thread_id] = np.random.default_rng(seed)
-
-    return _thread_local_rngs[thread_id]
-# a function samples a random walk starting from a specific point
-# and returns the needed values for feynman-kac poisson eval on the unit square
+from rng import get_rng
 
 
 def feynman_kac_sample_with_work(x0: float, y0: float, f, g, dt):

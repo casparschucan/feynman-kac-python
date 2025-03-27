@@ -4,6 +4,7 @@ from mlmc import mlmc
 from test_functions import test_cos, test_cos_rhs
 from test_functions import test_bound, test_rhs, test_phi
 from test_functions import non_hom_test
+from walk_on_spheres import walk_on_spheres_with_work
 
 from multiprocessing import Pool
 import matplotlib.pyplot as plt
@@ -139,9 +140,10 @@ if __name__ == "__main__":
         else:
             feynman_kac_eval(args.x, args.y, args.N_samples, args.dt0)
     elif args.plot_walks:
-        feynman_kac_correlated((args.x, args.y, test_bound, test_rhs,
-                                args.dt0, 1, 2),
-                               plot_walks=True)
+        walk_on_spheres_with_work(args.x, args.y,
+                                  test_bound, test_rhs,
+                                  args.dt0,
+                                  plot_walk=True)
     elif args.non_homogeneous:
         res, cost, max_level, _ = mlmc(args.x, args.y,
                                        non_hom_test, non_hom_test,
