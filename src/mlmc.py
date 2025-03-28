@@ -83,7 +83,7 @@ def mlmc(x: float, y: float, f, g, dt0: float, epsilon: float,
         if debug:
             # print("Samples per level:", N_samples)
             print("Variance per level:\n", variances)
-            # print("Expectation:\n", sample_sums/N_samples)
+            print("Expectation:\n", sample_sums/N_samples)
 
         # check how many samples are needed for each level and add samples
         # when necessary

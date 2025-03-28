@@ -1,10 +1,13 @@
 from random_walk import feynman_kac_sample, feynman_kac_correlated
 from analyze_data import check_convergence
 from mlmc import mlmc
-from test_functions import test_cos, test_cos_rhs
-from test_functions import test_bound, test_rhs, test_phi
-from test_functions import non_hom_test
 from walk_on_spheres import walk_on_spheres_with_work
+from test_functions import cos, cos_rhs
+from test_functions import sin, sin_rhs
+from test_functions import non_hom_test, sq_cos, sq_cos_rhs
+from test_functions import gaussian, gaussian_rhs
+from test_functions import exp, exp_rhs
+from test_functions import poly, poly_rhs
 
 from multiprocessing import Pool
 import matplotlib.pyplot as plt
@@ -14,7 +17,7 @@ from tqdm import tqdm
 import numpy as np
 
 
-def generate_samples(x, y, N, dt, f=test_phi, g=test_rhs):
+def generate_samples(x, y, N, dt, f=sin, g=sin_rhs):
 
     samples = np.zeros((N, 2))
     sample_results = []
@@ -33,7 +36,7 @@ def generate_samples(x, y, N, dt, f=test_phi, g=test_rhs):
     return samples
 
 
-def feynman_kac_eval(x, y, N, dt0, f=test_phi, g=test_rhs):
+def feynman_kac_eval(x, y, N, dt0, f=sin, g=sin_rhs):
     n = 8
     Ns = 1000 * np.logspace(0, n-1, n, base=2)
 
@@ -76,10 +79,10 @@ def check_mlmc_speedup(N, epsilon, dt0, x=.5, y=.5):
     speedup = np.zeros(N)
     for i in range(N):
         expectation[i], cost[i], max_level[i], max_cost = mlmc(x, y,
-                                                               test_bound,
-                                                               test_rhs,
+                                                               sin,
+                                                               sin_rhs,
                                                                dt0, epsilon)
-        errs[i] = abs(test_phi(x, y) - expectation[i])
+        errs[i] = abs(sin(x, y) - expectation[i])
 
         dt = dt0 * 2**int(-max_level[i])
         Ntest = 10000
@@ -96,7 +99,7 @@ def check_mlmc_speedup(N, epsilon, dt0, x=.5, y=.5):
     return speedup.mean()
 
 
-def plot_mlmc_speedup(N, dt0, x=.5, y=.5):
+def plot_mlmc_speedup(N, dt0, x=.5, y=.5, phi=sin, rhs=sin_rhs):
     epsilons = [.1, .05, .025, .0125]
     speedups = []
 
@@ -116,30 +119,54 @@ def plot_mlmc_speedup(N, dt0, x=.5, y=.5):
     plt.show()
 
 
+def output_mlmc_single_run(res, cost, max_level, uncorrelated_ratios, phi):
+    delta = abs(res - phi(args.x, args.y))
+    print(res, " vs. ", phi(args.x, args.y), " with a delta: ", delta)
+    print("had to generate ", cost, " random numbers")
+    print("and went up to level ", max_level)
+    print("uncorrelation ratios are:\n", uncorrelated_ratios)
+
+
 if __name__ == "__main__":
     # Set up argument parsing
     desc = 'Simulate feynman-kac poisson solver'
+
+    # Available test functions:
+    options = ["sin", "cos", "sq_cos", "poly", "gauss", "exp"]
+    solution_dict = {"sin": sin,
+                     "cos": cos,
+                     "sq_cos": sq_cos,
+                     "poly": poly,
+                     "gauss": gaussian,
+                     "exp": exp}
+    rhs_dict = {"sin": sin_rhs,
+                "cos": cos_rhs,
+                "sq_cos": sq_cos_rhs,
+                "poly": poly_rhs,
+                "gauss": gaussian_rhs,
+                "exp": exp_rhs}
+
     parser = argparse.ArgumentParser(description=desc)
+    parser.add_argument('phi', choices=options)
     parser.add_argument('-e', '--epsilon', type=float, default=.01)
     parser.add_argument('-s', '--standard_mc', action='store_true')
     parser.add_argument('-d', '--dt0', type=float, default=.01)
     parser.add_argument('-N', '--N_samples', type=int, default=256000)
     parser.add_argument('-x', '--x', type=float, default=.5)
     parser.add_argument('-y', '--y', type=float, default=.5)
-    parser.add_argument('--non_homogeneous', action='store_true')
     parser.add_argument('-w', '--plot_walks', action='store_true')
     parser.add_argument('--debug', action='store_true')
     parser.add_argument('--speedup', action='store_true')
 
     args = parser.parse_args()
 
+    phi = solution_dict[args.phi]
+    rhs = rhs_dict[args.phi]
+
     if args.standard_mc:
-        if args.non_homogeneous:
-            feynman_kac_eval(args.x, args.y, args.N_samples,
-                             args.dt0, test_cos, test_cos_rhs)
-        else:
-            feynman_kac_eval(args.x, args.y, args.N_samples, args.dt0)
+        feynman_kac_eval(args.x, args.y, args.N_samples, args.dt0, phi, rhs)
     elif args.plot_walks:
+<<<<<<< HEAD
         walk_on_spheres_with_work(args.x, args.y,
                                   test_bound, test_rhs,
                                   args.dt0,
@@ -152,15 +179,17 @@ if __name__ == "__main__":
         print(res, " vs. ", non_hom_test(args.x, args.y))
         print("had to generate ", cost, " random numbers")
         print("and went up to level ", max_level)
+=======
+        feynman_kac_correlated((args.x, args.y, phi, rhs, args.dt0, 1, 2),
+                               plot_walks=True)
+>>>>>>> main
     elif args.speedup:
-        plot_mlmc_speedup(args.N_samples, args.dt0)
+        plot_mlmc_speedup(args.N_samples, args.dt0, args.x, args.y, phi, rhs)
     else:
         res, cost, max_level, uncorrelated_ratios = mlmc(args.x, args.y,
-                                                         test_bound, test_rhs,
+                                                         phi, rhs,
                                                          args.dt0,
                                                          args.epsilon,
                                                          debug=args.debug)
-        print(res, " vs. ", test_phi(args.x, args.y))
-        print("had to generate ", cost, " random numbers")
-        print("and went up to level ", max_level)
-        print("uncorrelation ratios are:\n", uncorrelated_ratios)
+        output_mlmc_single_run(res, cost, max_level,
+                               uncorrelated_ratios, phi)
