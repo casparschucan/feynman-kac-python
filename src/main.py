@@ -1,7 +1,7 @@
 from random_walk import feynman_kac_sample, feynman_kac_correlated
 from analyze_data import check_convergence
 from mlmc import mlmc
-from walk_on_spheres import walk_on_spheres_with_work
+from walk_on_spheres import walk_on_spheres_with_work, walk_on_spheres
 from test_functions import cos, cos_rhs
 from test_functions import sin, sin_rhs
 from test_functions import non_hom_test, sq_cos, sq_cos_rhs
@@ -24,7 +24,7 @@ def generate_samples(x, y, N, dt, f=sin, g=sin_rhs):
     n_procs = 10
     with Pool(processes=n_procs) as pool:
         for i in range(N):
-            sample_results.append(pool.apply_async(feynman_kac_sample,
+            sample_results.append(pool.apply_async(walk_on_spheres,
                                                    args=(x,
                                                          y,
                                                          f,
@@ -166,23 +166,10 @@ if __name__ == "__main__":
     if args.standard_mc:
         feynman_kac_eval(args.x, args.y, args.N_samples, args.dt0, phi, rhs)
     elif args.plot_walks:
-<<<<<<< HEAD
         walk_on_spheres_with_work(args.x, args.y,
-                                  test_bound, test_rhs,
+                                  phi, rhs,
                                   args.dt0,
                                   plot_walk=True)
-    elif args.non_homogeneous:
-        res, cost, max_level, _ = mlmc(args.x, args.y,
-                                       non_hom_test, non_hom_test,
-                                       args.dt0, args.epsilon,
-                                       debug=args.debug)
-        print(res, " vs. ", non_hom_test(args.x, args.y))
-        print("had to generate ", cost, " random numbers")
-        print("and went up to level ", max_level)
-=======
-        feynman_kac_correlated((args.x, args.y, phi, rhs, args.dt0, 1, 2),
-                               plot_walks=True)
->>>>>>> main
     elif args.speedup:
         plot_mlmc_speedup(args.N_samples, args.dt0, args.x, args.y, phi, rhs)
     else:
