@@ -214,6 +214,15 @@ def feynman_kac_correlated(args, plot_walks=False):
     x_coarse, y_coarse = project_to_domain_edge(x_coarse, y_coarse)
     fine_integral += f(x_fine, y_fine)
     coarse_integral += f(x_coarse, y_coarse)
+    if plot_walks:
+        steps1_x.pop(-1)
+        steps1_y.pop(-1)
+        steps2_x.pop(-1)
+        steps2_y.pop(-1)
+        steps1_x.append(x_fine)
+        steps1_y.append(y_fine)
+        steps2_x.append(x_coarse)
+        steps2_y.append(y_coarse)
     integral = fine_integral - coarse_integral
 
     return integral, num_steps, uncorrelated
