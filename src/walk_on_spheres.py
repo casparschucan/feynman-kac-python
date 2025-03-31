@@ -42,6 +42,8 @@ def walk_on_spheres_with_work(x0: float, y0: float, f, g, delta: float,
         dy = step_radius * np.sin(direction)
 
         if distance_to_edge(x+dx, y+dy) <= delta:
+            x += dx
+            y += dy
             break
 
         if plot_walk:
