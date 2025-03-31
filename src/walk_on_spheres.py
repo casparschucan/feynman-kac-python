@@ -10,6 +10,14 @@ def distance_to_edge(x, y):
     return distance
 
 
+def Green_density(r, d):
+    return 2 * r / (np.pi * (d**2)) * np.log(d/r)
+
+
+def Ball_area(d):
+    return (d**2)/4
+
+
 def walk_on_spheres_with_work(x0: float, y0: float, f, g, delta: float,
                               debug=False, plot_walk=False):
     x = x0
@@ -23,7 +31,7 @@ def walk_on_spheres_with_work(x0: float, y0: float, f, g, delta: float,
     # the recorded integral
     integral = 0
 
-    while distance_to_edge(x, y) > delta:
+    while True:
         # the step size ensuring we don't leave the domain
         step_radius = distance_to_edge(x, y)
         direction = rng.random() * 2 * np.pi  # a direction in form of an angle
@@ -32,11 +40,23 @@ def walk_on_spheres_with_work(x0: float, y0: float, f, g, delta: float,
 
         dx = step_radius * np.cos(direction)
         dy = step_radius * np.sin(direction)
-        x += dx
-        y += dy
+
+        if distance_to_edge(x+dx, y+dy) <= delta:
+            break
+
         if plot_walk:
             x_steps.append(x)
             y_steps.append(y)
+
+        green_radius = step_radius * (rng.random()**.5)
+        green_direction = rng.random() * 2 * np.pi
+        green_x = green_radius * np.cos(green_direction) + x
+        green_y = green_radius * np.sin(green_direction) + y
+
+        integral += 2*Ball_area(step_radius) * g(green_x, green_y)
+
+        x += dx
+        y += dy
 
     x, y = project_to_domain_edge(x, y)
     if plot_walk:
@@ -44,3 +64,12 @@ def walk_on_spheres_with_work(x0: float, y0: float, f, g, delta: float,
         y_steps.append(y)
         visualize_random_walk(x_steps, y_steps, [], [])
     integral += f(x, y)
+
+    return integral, num_steps
+
+
+def walk_on_spheres(x0: float, y0: float, f, g, delta: float,
+                    debug=False, plot_walk=False):
+    integral, work = walk_on_spheres_with_work(x0, y0, f, g, delta,
+                                               debug, plot_walk)
+    return np.array([integral, work])
