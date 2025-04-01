@@ -53,6 +53,16 @@ def gaussian_rhs(x, y):
     return -.5*(4*r2 - 4)*np.exp(-r2)/0.01
 
 
+def gaussian_edge(x, y):
+    return np.exp(-((x)**2 + (y)**2)/0.01)
+
+
+def gaussian_edge_rhs(x, y):
+    # Laplacian of exp(-((x-0.5)²+(y-0.5)²)/0.01)
+    r2 = ((x)**2 + (y)**2)/0.01
+    return -.5*(4*r2 - 4)*np.exp(-r2)/0.01
+
+
 def exp(x, y):
     return np.exp(x+y)
 
