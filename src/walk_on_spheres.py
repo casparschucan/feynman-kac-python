@@ -1,4 +1,5 @@
 import numpy as np
+import scipy
 
 from visualize import visualize_random_walk
 from rng import get_rng
@@ -15,6 +16,8 @@ def Green_density(r, d):
 
 
 def Green_probability(r, d):
+    if (r == 0):
+        return 0
     return 2*r*r/(d*d) * (0.5 + np.log(d/r))
 
 
@@ -31,6 +34,20 @@ def sample_radius(d):
         sample_y = rng.random()
 
     return sample_x
+
+
+def sample_radius_transform(d):
+    rng = get_rng()
+    u = rng.random()
+
+    def func(x):
+        return Green_probability(x, 1) - u
+    sol = scipy.optimize.root_scalar(func,
+                                     bracket=[0, 1], method='brentq')
+    if not sol.converged:
+        print("Oh no u = ", u, "with max possible = ", Green_probability(1, 1))
+        raise Exception("test")
+    return sol.root * d
 
 
 def walk_on_spheres_with_work(x0: float, y0: float, f, g, delta: float,
