@@ -25,13 +25,14 @@ def Ball_area(d):
     return (d**2)/4
 
 
-def sample_radius(d):
+def sample_radius_reject(d):
     rng = get_rng()
+    max = 4/(d*np.e)
     sample_x = rng.random()*d
-    sample_y = rng.random()
+    sample_y = rng.random() * max
     while sample_y > Green_density(sample_x, d):
         sample_x = rng.random()*d
-        sample_y = rng.random()
+        sample_y = rng.random() * max
 
     return sample_x
 
@@ -84,7 +85,7 @@ def walk_on_spheres_with_work(x0: float, y0: float, f, g, delta: float,
             y_steps.append(y)
 
         # uniformly sample disk of the current step
-        green_radius = sample_radius(step_radius)
+        green_radius = sample_radius_reject(step_radius)
         green_direction = rng.random() * 2 * np.pi
         green_x = green_radius * np.cos(green_direction) + x
         green_y = green_radius * np.sin(green_direction) + y
