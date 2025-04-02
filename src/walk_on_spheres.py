@@ -32,7 +32,7 @@ def walk_on_spheres_with_work(x0: float, y0: float, f, g, delta: float,
     integral = 0
 
     while True:
-        # the step size ensuring we don't leave the domain
+        # the biggest possible step size ensuring we don't leave the domain
         step_radius = distance_to_edge(x, y)
         direction = rng.random() * 2 * np.pi  # a direction in form of an angle
 
@@ -41,6 +41,7 @@ def walk_on_spheres_with_work(x0: float, y0: float, f, g, delta: float,
         dx = step_radius * np.cos(direction)
         dy = step_radius * np.sin(direction)
 
+        # break loop if we are close enough to the edge
         if distance_to_edge(x+dx, y+dy) <= delta:
             x += dx
             y += dy
@@ -50,11 +51,14 @@ def walk_on_spheres_with_work(x0: float, y0: float, f, g, delta: float,
             x_steps.append(x)
             y_steps.append(y)
 
+        # uniformly sample disk of the current step
         green_radius = step_radius * (rng.random()**.5)
         green_direction = rng.random() * 2 * np.pi
         green_x = green_radius * np.cos(green_direction) + x
         green_y = green_radius * np.sin(green_direction) + y
 
+        # introduce factor 2 compared to paper due to differen poisson
+        # formulation
         integral += 2*Ball_area(step_radius) * g(green_x, green_y)
 
         x += dx
