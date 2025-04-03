@@ -51,16 +51,6 @@ def feynman_kac_sample_with_work(x0: float, y0: float, f, g, dt):
 
         num_steps += 1
 
-    if x < 0:
-        x = 0
-    elif x > 1:
-        x = 1
-
-    if y < 0:
-        y = 0
-    elif y > 1:
-        y = 1
-
     integral += f(x, y)
 
     return integral, num_steps, False
