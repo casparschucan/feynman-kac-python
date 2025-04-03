@@ -35,7 +35,6 @@ def feynman_kac_sample_with_work(x0: float, y0: float, f, g, dt):
     gen = get_rng()
 
     while x > 0 and y > 0 and x < 1 and y < 1:
-        integral += g(x, y)*dt
         eps_x = gen.normal(scale=np.sqrt(dt))
 
         eps_y = gen.normal(scale=np.sqrt(dt))
@@ -46,6 +45,7 @@ def feynman_kac_sample_with_work(x0: float, y0: float, f, g, dt):
             y = y_edge
             break
 
+        integral += g(x, y)*dt
         y += eps_y
         x += eps_x
 
@@ -53,6 +53,7 @@ def feynman_kac_sample_with_work(x0: float, y0: float, f, g, dt):
 
     integral += f(x, y)
 
+    assert (abs(x - 1) < 1e-10) or (abs(x) < 1e-10) or (abs(y - 1) < 1e-10) or (abs(y) < 1e-10)
     return integral, num_steps, False
 
 
@@ -116,6 +117,8 @@ def calculate_exit(x, y, delta_x, delta_y):
 
     if t < 0:
         print("nooooo ", t)
+
+    assert (t <= 1) and (t >= 0)
     return t, x + delta_x * t, y + delta_y * t
 
 
@@ -179,7 +182,7 @@ def feynman_kac_correlated(args, plot_walks=False):
         if not is_in_domain(x_coarse + eps_x_coarse, y_coarse + eps_y_coarse):
             t, x, y = calculate_exit(x_coarse, y_coarse, eps_x_coarse, eps_y_coarse)
             coarse_in = False
-            coarse_integral += t * dt_coarse * g(dt_coarse, dt_coarse)
+            coarse_integral += t * dt_coarse * g(x_coarse, y_coarse)
             x_coarse = x
             y_coarse = y
             if plot_walks:
@@ -200,10 +203,12 @@ def feynman_kac_correlated(args, plot_walks=False):
     if plot_walks:
         visualize_random_walk(steps1_x, steps1_y, steps2_x, steps2_y)
 
-    x_fine, y_fine = project_to_domain_edge(x_fine, y_fine)
-    x_coarse, y_coarse = project_to_domain_edge(x_coarse, y_coarse)
+    assert (abs(x_fine - 1) < 1e-10) or (abs(x_fine) < 1e-10) or (abs(y_fine - 1) < 1e-10) or (abs(y_fine) < 1e-10)
+    assert (abs(x_coarse - 1) < 1e-10) or (abs(x_coarse) < 1e-10) or (abs(y_coarse - 1) < 1e-10) or (abs(y_coarse) < 1e-10)
     fine_integral += f(x_fine, y_fine)
     coarse_integral += f(x_coarse, y_coarse)
+
+
     if plot_walks:
         steps1_x.pop(-1)
         steps1_y.pop(-1)
