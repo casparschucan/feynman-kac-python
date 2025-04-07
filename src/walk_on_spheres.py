@@ -21,6 +21,12 @@ def Green_probability(r, d):
     return 2*r*r/(d*d) * (0.5 + np.log(d/r))
 
 
+def Green_probability_2(r, d):
+    if (r == 0):
+        return 0
+    return r/d * (1 + np.log(d/r))
+
+
 def Ball_area(d):
     return (d**2)/4
 
@@ -42,7 +48,7 @@ def sample_radius_transform(d):
     u = rng.random()
 
     def func(x):
-        return Green_probability(x, 1) - u
+        return Green_probability_2(x, 1) - u
     sol = scipy.optimize.root_scalar(func,
                                      bracket=[0, 1], method='brentq')
     if not sol.converged:

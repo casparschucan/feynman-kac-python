@@ -54,7 +54,7 @@ def feynman_kac_eval(x, y, N, dt0, f=sin, g=sin_rhs):
 
         run_id = str(N) + "_" + str(dt) + "_" + str(x) + "_" + str(y)
 
-        np.savetxt(run_id + "_data.csv", samples,  delimiter=",")
+        # np.savetxt(run_id + "_data.csv", samples,  delimiter=",")
 
         plt.loglog(Ns, errs, label="average errors dt="+str(dt))
         plt.scatter(Ns, errs)
@@ -67,7 +67,7 @@ def feynman_kac_eval(x, y, N, dt0, f=sin, g=sin_rhs):
     plt.xlabel("N samples")
     plt.ylabel("average error")
     plt.legend()
-    plt.savefig(run_id + "_plot.png")
+    # plt.savefig(run_id + "_plot.png")
     plt.show()
 
 
