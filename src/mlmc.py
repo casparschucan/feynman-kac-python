@@ -1,4 +1,5 @@
 from random_walk import feynman_kac_correlated
+from walk_on_spheres import walk_on_spheres_correlated
 
 import numpy as np
 from multiprocessing import Pool
@@ -27,7 +28,7 @@ def generate_mlmc_data(x: float,
 
     with Pool(processes=n_procs) as pool:
 
-        sample_results = pool.imap_unordered(feynman_kac_correlated,
+        sample_results = pool.imap_unordered(walk_on_spheres_correlated,
                                              ((x, y, f, g,
                                                dt_fine, level, dt_ratio)
                                               for _ in range(N_samples)),
@@ -43,9 +44,9 @@ def generate_mlmc_data(x: float,
 
 
 def mlmc(x: float, y: float, f, g, dt0: float, epsilon: float,
-         debug=False, dt_ratio=2):
+         debug=False, dt_ratio=16):
     max_level = 3
-    N_start = 500
+    N_start = 10000
     N_samples = np.full(max_level, N_start)
     N_samples_diff = np.full(max_level, N_start)
 
@@ -67,6 +68,7 @@ def mlmc(x: float, y: float, f, g, dt0: float, epsilon: float,
                                                         N_samples_diff[level],
                                                         dt_ratio,
                                                         debug=debug)
+            print(uncor)
             costs[level] += work
             sample_sums[level] += ss
             sample_sums_sq[level] += ss_sq
@@ -106,6 +108,7 @@ def mlmc(x: float, y: float, f, g, dt0: float, epsilon: float,
                                                         N_samples_diff[level],
                                                         dt_ratio,
                                                         debug=debug)
+            print(uncor)
             costs[level] += work
             sample_sums[level] += ss
             sample_sums_sq[level] += ss_sq

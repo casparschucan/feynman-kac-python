@@ -118,3 +118,91 @@ def walk_on_spheres(x0: float, y0: float, f, g, delta: float,
     integral, work = walk_on_spheres_with_work(x0, y0, f, g, delta,
                                                debug, plot_walk)
     return np.array([integral, work])
+
+# def feynman_kac_correlated(args, plot_walks=False):
+    # x0, y0, f, g, dt_fine, level, dt_ratio = args
+
+
+def walk_on_spheres_correlated(args, plot_walk=False):
+    x0, y0, f, g, delta_fine, level, delta_ratio = args
+    x_fine = x0
+    y_fine = y0
+    x_coarse = x0
+    y_coarse = y0
+    rng = get_rng()
+    num_steps = 0
+
+    delta_coarse = delta_fine/delta_ratio
+
+    x_steps_fine = [x0]
+    y_steps_fine = [y0]
+    x_steps_coarse = [x0]
+    y_steps_coarse = [y0]
+
+    # the recorded integral
+    integral_fine = 0
+    integral_coarse = 0
+
+    uncor = 0
+
+    coarse_in = True
+
+    if level == 0:
+        integral, num_steps = walk_on_spheres_with_work(x0, y0, f, g, delta_fine)
+        return integral, num_steps, 0
+
+    while True:
+        # the biggest possible step size ensuring we don't leave the domain
+        step_radius = distance_to_edge(x_fine, y_fine)
+        direction = rng.random() * 2 * np.pi  # a direction in form of an angle
+
+        num_steps += 1
+
+        dx = step_radius * np.cos(direction)
+        dy = step_radius * np.sin(direction)
+
+        if distance_to_edge(x_coarse + dx, y_coarse + dy) <= delta_coarse:
+            x_coarse += dx
+            y_coarse += dy
+            coarse_in = False
+
+        # break loop if we are close enough to the edge
+        if distance_to_edge(x_fine+dx, y_fine+dy) <= delta_fine:
+            x_fine += dx
+            y_fine += dy
+            break
+
+        if plot_walk:
+            x_steps_fine.append(x_fine)
+            y_steps_fine.append(y_fine)
+
+        # uniformly sample disk of the current step
+        green_radius = sample_radius_reject(step_radius)
+        green_direction = rng.random() * 2 * np.pi
+        green_x = green_radius * np.cos(green_direction) + x_fine
+        green_y = green_radius * np.sin(green_direction) + y_fine
+
+        # introduce factor 2 compared to paper due to differen poisson
+        # formulation
+        integral_fine += 2*Ball_area(step_radius) * g(green_x, green_y)
+
+        x_fine += dx
+        y_fine += dy
+
+        if coarse_in:
+            integral_coarse += 2*Ball_area(step_radius)*g(green_x, green_y)
+            x_coarse += dx
+            y_coarse += dy
+        else:
+            uncor = 1
+
+    x_fine, y_fine = project_to_domain_edge(x_fine, y_fine)
+    x_coarse, y_coarse = project_to_domain_edge(x_coarse, y_coarse)
+    if plot_walk:
+        x_steps_fine.append(x_fine)
+        y_steps_fine.append(y_fine)
+        visualize_random_walk(x_steps_fine, y_steps_fine, [], [])
+    integral_fine += f(x_fine, y_fine)
+    integral_coarse += f(x_coarse, y_coarse)
+
+    return integral_fine - integral_coarse, num_steps, uncor
