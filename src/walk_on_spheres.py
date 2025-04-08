@@ -175,6 +175,9 @@ def walk_on_spheres_correlated(args, plot_walk=False):
         if plot_walk:
             x_steps_fine.append(x_fine)
             y_steps_fine.append(y_fine)
+            if coarse_in:
+                x_steps_coarse.append(x_coarse)
+                y_steps_coarse.append(y_coarse)
 
         # uniformly sample disk of the current step
         green_radius = sample_radius_reject(step_radius)
@@ -201,7 +204,11 @@ def walk_on_spheres_correlated(args, plot_walk=False):
     if plot_walk:
         x_steps_fine.append(x_fine)
         y_steps_fine.append(y_fine)
-        visualize_random_walk(x_steps_fine, y_steps_fine, [], [])
+        x_steps_coarse.append(x_coarse)
+        y_steps_coarse.append(y_coarse)
+        visualize_random_walk(x_steps_fine, y_steps_fine,
+                              x_steps_coarse, y_steps_coarse)
+
     integral_fine += f(x_fine, y_fine)
     integral_coarse += f(x_coarse, y_coarse)
 

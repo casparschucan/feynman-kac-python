@@ -1,7 +1,7 @@
 from random_walk import feynman_kac_sample, feynman_kac_correlated
 from analyze_data import check_convergence
 from mlmc import mlmc
-from walk_on_spheres import walk_on_spheres_with_work, walk_on_spheres
+from walk_on_spheres import walk_on_spheres, walk_on_spheres_correlated
 from test_functions import cos, cos_rhs
 from test_functions import sin, sin_rhs
 from test_functions import non_hom_test, sq_cos, sq_cos_rhs
@@ -166,10 +166,10 @@ if __name__ == "__main__":
     if args.standard_mc:
         feynman_kac_eval(args.x, args.y, args.N_samples, args.dt0, phi, rhs)
     elif args.plot_walks:
-        walk_on_spheres_with_work(args.x, args.y,
-                                  phi, rhs,
-                                  args.dt0,
-                                  plot_walk=True)
+        walk_on_spheres_correlated((args.x, args.y,
+                                    phi, rhs,
+                                    args.dt0, 1, 16),
+                                   plot_walk=True)
     elif args.speedup:
         plot_mlmc_speedup(args.N_samples, args.dt0, args.x, args.y, phi, rhs)
     else:
