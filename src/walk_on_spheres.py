@@ -132,7 +132,7 @@ def walk_on_spheres_correlated(args, plot_walk=False):
     rng = get_rng()
     num_steps = 0
 
-    delta_coarse = delta_fine/delta_ratio
+    delta_coarse = delta_fine*delta_ratio
 
     x_steps_fine = [x0]
     y_steps_fine = [y0]
