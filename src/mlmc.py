@@ -21,24 +21,32 @@ def generate_mlmc_data(x: float,
     if debug:
         print("generating ", N_samples, " samples")
 
-    n_procs = 10
+    n_procs = 2
 
     chunk_size = max(N_samples // (10 * n_procs), 10)
     chunk_size = min(chunk_size, 10000)
+    args = (x, y, f, g, dt_fine, level, dt_ratio)
 
-    with Pool(processes=n_procs) as pool:
+    for _ in range(N_samples):
+        sample, sample_work, sample_uncor = walk_on_spheres_correlated(args)
+        sample_sum += sample
+        sample_sum_sq += sample**2
+        work += sample_work
+        uncorrelated_sum += sample_uncor
 
-        sample_results = pool.imap_unordered(walk_on_spheres_correlated,
-                                             ((x, y, f, g,
-                                               dt_fine, level, dt_ratio)
-                                              for _ in range(N_samples)),
-                                             chunksize=chunk_size)
+    # with Pool(processes=n_procs) as mc_pool:
 
-        for sample in sample_results:
-            sample_sum += sample[0]
-            sample_sum_sq += sample[0]**2
-            work += sample[1]
-            uncorrelated_sum += sample[2]
+        # sample_results = mc_pool.imap_unordered(walk_on_spheres_correlated,
+                                                # ((x, y, f, g,
+                                                  # dt_fine, level, dt_ratio)
+                                                 # for _ in range(N_samples)),
+                                                # chunksize=chunk_size)
+
+        # for sample in sample_results:
+            # sample_sum += sample[0]
+            # sample_sum_sq += sample[0]**2
+            # work += sample[1]
+            # uncorrelated_sum += sample[2]
 
     return sample_sum, sample_sum_sq, work, uncorrelated_sum
 
@@ -68,7 +76,6 @@ def mlmc(x: float, y: float, f, g, dt0: float, epsilon: float,
                                                         N_samples_diff[level],
                                                         dt_ratio,
                                                         debug=debug)
-            print(uncor)
             costs[level] += work
             sample_sums[level] += ss
             sample_sums_sq[level] += ss_sq
@@ -108,7 +115,6 @@ def mlmc(x: float, y: float, f, g, dt0: float, epsilon: float,
                                                         N_samples_diff[level],
                                                         dt_ratio,
                                                         debug=debug)
-            print(uncor)
             costs[level] += work
             sample_sums[level] += ss
             sample_sums_sq[level] += ss_sq

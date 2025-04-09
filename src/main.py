@@ -8,11 +8,13 @@ from test_functions import non_hom_test, sq_cos, sq_cos_rhs
 from test_functions import gaussian, gaussian_rhs
 from test_functions import exp, exp_rhs
 from test_functions import poly, poly_rhs
+from benchmarks import benchmark_mlmc, create_large_parameter_set
 
 from multiprocessing import Pool
 import matplotlib.pyplot as plt
 import argparse
 from tqdm import tqdm
+import pandas as pd
 
 import numpy as np
 
@@ -84,7 +86,7 @@ def check_mlmc_speedup(N, epsilon, dt0, x=.5, y=.5):
                                                                dt0, epsilon)
         errs[i] = abs(sin(x, y) - expectation[i])
 
-        dt = dt0 * 2**int(-max_level[i])
+        dt = dt0 * 16**int(-max_level[i])
         Ntest = 10000
         samples_work = generate_samples(x, y, Ntest, dt)
 
@@ -157,6 +159,7 @@ if __name__ == "__main__":
     parser.add_argument('-w', '--plot_walks', action='store_true')
     parser.add_argument('--debug', action='store_true')
     parser.add_argument('--speedup', action='store_true')
+    parser.add_argument('-b', '--benchmark', action='store_true')
 
     args = parser.parse_args()
 
@@ -172,6 +175,10 @@ if __name__ == "__main__":
                                    plot_walk=True)
     elif args.speedup:
         plot_mlmc_speedup(args.N_samples, args.dt0, args.x, args.y, phi, rhs)
+    elif args.benchmark:
+        parameter_sets = create_large_parameter_set()
+        res = benchmark_mlmc(parameter_sets, 10)
+        res.to_csv("benchmark_data.csv")
     else:
         res, cost, max_level, uncorrelated_ratios = mlmc(args.x, args.y,
                                                          phi, rhs,
