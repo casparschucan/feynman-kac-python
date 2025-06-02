@@ -8,6 +8,7 @@ from test_functions import non_hom_test, sq_cos, sq_cos_rhs
 from test_functions import gaussian, gaussian_rhs
 from test_functions import exp, exp_rhs
 from test_functions import poly, poly_rhs
+from test_functions import paper, paper_rhs
 from benchmarks import benchmark_mlmc, create_large_parameter_set
 
 from multiprocessing import Pool
@@ -79,6 +80,7 @@ def check_mlmc_speedup(N, epsilon, dt0, x=.5, y=.5):
     cost = np.zeros(N)
     max_level = np.zeros(N)
     speedup = np.zeros(N)
+    print("N", N)
     for i in range(N):
         expectation[i], cost[i], max_level[i], max_cost = mlmc(x, y,
                                                                sin,
@@ -95,14 +97,14 @@ def check_mlmc_speedup(N, epsilon, dt0, x=.5, y=.5):
 
         varL = samples.std()**2
         NlCl = work.sum()
-        costs_sd = NlCl * varL / epsilon**2
+        costs_sd = NlCl * varL / epsilon**2 / Ntest
         speedup[i] = costs_sd / cost[i]
 
     return speedup.mean()
 
 
 def plot_mlmc_speedup(N, dt0, x=.5, y=.5, phi=sin, rhs=sin_rhs):
-    epsilons = [.1, .05, .025, .0125]
+    epsilons = [.1, 0.025, .01, 0.0025, .001]
     speedups = []
 
     for eps in epsilons:
@@ -110,8 +112,12 @@ def plot_mlmc_speedup(N, dt0, x=.5, y=.5, phi=sin, rhs=sin_rhs):
 
     # Log-Log plot
     plt.loglog(epsilons, speedups, label="speedup")
-    plt.title("average speedup")
-    plt.xlabel("target epsilon")
+    plt.scatter(epsilons, speedups)
+    plt.xticks(epsilons)
+    plt.title("average speedup of MLMC")
+    plt.xlabel("target error")
+    plt.grid()
+    plt.ylim(0.1, 10)
     plt.ylabel("estimated speedup")
     plt.legend()
 
@@ -134,19 +140,21 @@ if __name__ == "__main__":
     desc = 'Simulate feynman-kac poisson solver'
 
     # Available test functions:
-    options = ["sin", "cos", "sq_cos", "poly", "gauss", "exp"]
+    options = ["sin", "cos", "sq_cos", "poly", "gauss", "exp", "paper"]
     solution_dict = {"sin": sin,
                      "cos": cos,
                      "sq_cos": sq_cos,
                      "poly": poly,
                      "gauss": gaussian,
-                     "exp": exp}
+                     "exp": exp,
+                     "paper": paper}
     rhs_dict = {"sin": sin_rhs,
                 "cos": cos_rhs,
                 "sq_cos": sq_cos_rhs,
                 "poly": poly_rhs,
                 "gauss": gaussian_rhs,
-                "exp": exp_rhs}
+                "exp": exp_rhs,
+                "paper": paper_rhs}
 
     parser = argparse.ArgumentParser(description=desc)
     parser.add_argument('phi', choices=options)
@@ -157,6 +165,7 @@ if __name__ == "__main__":
     parser.add_argument('-x', '--x', type=float, default=.5)
     parser.add_argument('-y', '--y', type=float, default=.5)
     parser.add_argument('-w', '--plot_walks', action='store_true')
+    parser.add_argument('--single_sample', action='store_true')
     parser.add_argument('--debug', action='store_true')
     parser.add_argument('--speedup', action='store_true')
     parser.add_argument('-b', '--benchmark', action='store_true')
@@ -167,6 +176,8 @@ if __name__ == "__main__":
     rhs = rhs_dict[args.phi]
 
     if args.standard_mc:
+        if args.single_sample:
+            walk_on_spheres(args.x, args.y, phi, rhs, args.dt0)
         feynman_kac_eval(args.x, args.y, args.N_samples, args.dt0, phi, rhs)
     elif args.plot_walks:
         walk_on_spheres_correlated((args.x, args.y,

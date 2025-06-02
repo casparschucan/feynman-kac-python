@@ -59,3 +59,15 @@ def exp(x, y):
 
 def exp_rhs(x, y):
     return -np.exp(x+y)  # Laplacian of exp(x+y)
+
+
+def paper(x, y):
+    if x < 0.25:
+        return 4*(x - 0.25)**2
+    if x > 0.75:
+        return 4*(x - 0.75)**2
+    return 0
+
+
+def paper_rhs(x, y):
+    return 0

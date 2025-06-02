@@ -1,6 +1,7 @@
 import pandas as pd
 from mlmc import mlmc
-from test_functions import *
+from test_functions import sin, sin_rhs, cos, cos_rhs, sq_cos, sq_cos_rhs
+from test_functions import poly, poly_rhs, gaussian, gaussian_rhs, exp, exp_rhs
 from multiprocessing import Pool
 import time
 import numpy as np
@@ -14,7 +15,7 @@ test_functions = {"Sine": sin,
                   "Gaussian": gaussian,
                   "Exponential": exp}
 test_rhs = {"Sine": sin_rhs,
-            "Cosine": cos_rhs, 
+            "Cosine": cos_rhs,
             "Cosine^2": sq_cos_rhs,
             "Polynomial": poly_rhs,
             "Gaussian": gaussian_rhs,
@@ -59,6 +60,7 @@ def run_single_benchmark(params):
                          }
 
         return current_result
+
 
 def benchmark_mlmc(parameter_sets, runs=5):
     """
