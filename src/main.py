@@ -175,15 +175,20 @@ if __name__ == "__main__":
     phi = solution_dict[args.phi]
     rhs = rhs_dict[args.phi]
 
-    if args.standard_mc:
+    if args.plot_walks:
+        if args.standard_mc:
+            feynman_kac_correlated((args.x, args.y,
+                                    phi, rhs,
+                                    args.dt0, 1, 2), plot_walks=True)
+        else:
+            walk_on_spheres(args.x, args.y,
+                            phi, rhs,
+                            args.dt0,
+                            plot_walk=True)
+    elif args.standard_mc:
         if args.single_sample:
             walk_on_spheres(args.x, args.y, phi, rhs, args.dt0)
         feynman_kac_eval(args.x, args.y, args.N_samples, args.dt0, phi, rhs)
-    elif args.plot_walks:
-        walk_on_spheres_correlated((args.x, args.y,
-                                    phi, rhs,
-                                    args.dt0, 1, 16),
-                                   plot_walk=True)
     elif args.speedup:
         plot_mlmc_speedup(args.N_samples, args.dt0, args.x, args.y, phi, rhs)
     elif args.benchmark:

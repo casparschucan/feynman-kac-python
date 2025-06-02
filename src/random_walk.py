@@ -1,5 +1,5 @@
 import numpy as np
-from visualize import visualize_random_walk
+from visualize import visualize_correlated_random_walk
 from rng import get_rng
 
 
@@ -142,7 +142,7 @@ def feynman_kac_correlated(args, plot_walks=False):
             coarse_in = False
 
     if plot_walks:
-        visualize_random_walk(steps1_x, steps1_y, steps2_x, steps2_y)
+        visualize_correlated_random_walk(steps1_x, steps1_y, steps2_x, steps2_y)
 
     x_fine, y_fine = project_to_domain_edge(x_fine, y_fine)
     x_coarse, y_coarse = project_to_domain_edge(x_coarse, y_coarse)

@@ -1,7 +1,7 @@
 import numpy as np
 import scipy
 
-from visualize import visualize_random_walk
+from visualize import visualize_correlated_random_walk, visualize_walk_on_spheres
 from rng import get_rng
 from random_walk import project_to_domain_edge
 
@@ -70,7 +70,7 @@ def walk_on_spheres_with_work(x0: float, y0: float, f, g, delta: float,
     # the recorded integral
     integral = 0
 
-    while True:
+    while distance_to_edge(x, y) > delta:
         # the biggest possible step size ensuring we don't leave the domain
         step_radius = distance_to_edge(x, y)
         direction = rng.random() * 2 * np.pi  # a direction in form of an angle
@@ -79,16 +79,6 @@ def walk_on_spheres_with_work(x0: float, y0: float, f, g, delta: float,
 
         dx = step_radius * np.cos(direction)
         dy = step_radius * np.sin(direction)
-
-        # break loop if we are close enough to the edge
-        if distance_to_edge(x+dx, y+dy) <= delta:
-            x += dx
-            y += dy
-            break
-
-        if plot_walk:
-            x_steps.append(x)
-            y_steps.append(y)
 
         # uniformly sample disk of the current step
         green_radius = sample_radius_reject(step_radius)
@@ -103,11 +93,13 @@ def walk_on_spheres_with_work(x0: float, y0: float, f, g, delta: float,
         x += dx
         y += dy
 
+        if plot_walk:
+            x_steps.append(x)
+            y_steps.append(y)
+
     x, y = project_to_domain_edge(x, y)
     if plot_walk:
-        x_steps.append(x)
-        y_steps.append(y)
-        visualize_random_walk(x_steps, y_steps, [], [])
+        visualize_walk_on_spheres(x_steps, y_steps)
     integral += f(x, y)
 
     return integral, num_steps
@@ -206,7 +198,7 @@ def walk_on_spheres_correlated(args, plot_walk=False):
         y_steps_fine.append(y_fine)
         x_steps_coarse.append(x_coarse)
         y_steps_coarse.append(y_coarse)
-        visualize_random_walk(x_steps_fine, y_steps_fine,
+        visualize_correlated_random_walk(x_steps_fine, y_steps_fine,
                               x_steps_coarse, y_steps_coarse)
 
     integral_fine += f(x_fine, y_fine)
