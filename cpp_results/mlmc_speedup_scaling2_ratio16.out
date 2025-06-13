@@ -1,0 +1,421 @@
+starting make on job 332932
+Warning: Option '4' is not parsed by Ippl.
+Warning: Option '10000' is not parsed by Ippl.
+Warning: Option '0.01' is not parsed by Ippl.
+Warning: Option '0.001' is not parsed by Ippl.
+Warning: Option '16' is not parsed by Ippl.
+Warning: Option 'mlmcSpeedup' is not parsed by Ippl.
+TestFeynmanKac> Test FeynmanKac, grid = 4 N samples = 10000 delta0 = 0.01 epsilon = 0.001
+TestFeynmanKac> MLMC speedup test
+TestFeynmanKac>             epsilon,          Dimension,        MLMC result,          MC result,           expected,          MLMC cost,            MC cost,          max Level,               varL,
+TestFeynmanKac>                0.001,                   2,   1.002248624833076,   1.001005228619352,                   1,             5356426,            11039794,                   3,  0.1692233526817625,
+TestFeynmanKac>                0.001,                   2,   1.001056440054992,   1.000852193768729,                   1,             5162806,            10609946,                   3,  0.1611219625594818,
+TestFeynmanKac>                0.001,                   2,   1.001575462363474,  0.9994303084431202,                   1,             5810352,             9825624,                   3,  0.1515373934078538,
+TestFeynmanKac>                0.001,                   2,  0.9990118883256025,  0.9992697749087425,                   1,             4472924,            10702976,                   3,  0.1621260087680013,
+TestFeynmanKac>                0.001,                   2,  0.9995138561528528,     1.0004780828548,                   1,             5231344,            10361783,                   3,  0.1575495667930685,
+TestFeynmanKac>             epsilon,          Dimension,        MLMC result,          MC result,           expected,          MLMC cost,            MC cost,          max Level,               varL,
+TestFeynmanKac>                0.001,                   3,   1.001004759124857,  0.9990250185121161,                   1,            15666045,            39183626,                   3,  0.1828537737922954,
+TestFeynmanKac>                0.001,                   3,   1.001510304775128,   0.999389287188598,                   1,            15069585,            37258677,                   3,   0.175624378744237,
+TestFeynmanKac>                0.001,                   3,  0.9984499467527652,  0.9984064053975964,                   1,            16296468,            38099294,                   3,  0.1783504438750544,
+TestFeynmanKac>                0.001,                   3,   1.000771161820072,  0.9986592086689572,                   1,            15283380,            38506286,                   3,  0.1808616870841521,
+TestFeynmanKac>                0.001,                   3,  0.9991718678597149,   0.998619297254319,                   1,            17363889,            39199083,                   3,  0.1836659198315276,
+TestFeynmanKac>             epsilon,          Dimension,        MLMC result,          MC result,           expected,          MLMC cost,            MC cost,          max Level,               varL,
+TestFeynmanKac>                0.001,                   4,   1.000560409994978,   1.000899285102808,                   1,            30217460,            73186147,                   3,  0.1650364639214926,
+TestFeynmanKac>                0.001,                   4,  0.9986721839254354,   1.000113367211447,                   1,            29491272,            76552839,                   3,  0.1716108153710074,
+TestFeynmanKac>                0.001,                   4,  0.9995418402720919,   1.000454400259048,                   1,            28780076,            74585328,                   3,  0.1677664224995964,
+TestFeynmanKac>                0.001,                   4,  0.9978322976170731,  0.9998014920042735,                   1,            29421708,            75731414,                   3,  0.1708294166342303,
+TestFeynmanKac>                0.001,                   4,  0.9995383968226158,   1.000013737881105,                   1,            28653948,            75737484,                   3,  0.1719346384042325,
+TestFeynmanKac>             epsilon,          Dimension,        MLMC result,          MC result,           expected,          MLMC cost,            MC cost,          max Level,               varL,
+TestFeynmanKac>                0.001,                   5,  0.9997011102819308,  0.9996611504311611,                   1,            45608580,           117820671,                   3,  0.1556537046948717,
+TestFeynmanKac>                0.001,                   5,  0.9997180715604062,    1.00010435443104,                   1,            43832040,           116401108,                   3,  0.1541024178477206,
+TestFeynmanKac>                0.001,                   5,  0.9988308099453286,   1.000159058645294,                   1,            43004390,           120732070,                   3,     0.1601049087464,
+TestFeynmanKac>                0.001,                   5,   1.000241433053097,    1.00036464493872,                   1,            41504570,           117892737,                   3,  0.1560236745446276,
+TestFeynmanKac>                0.001,                   5,  0.9993454903730111,  0.9998137194728467,                   1,            42837570,           122003377,                   3,   0.161402331635966,
+Timings> ---------------------------------------------
+Timings>      Timing results for 1 nodes:
+Timings> ---------------------------------------------
+Timings> allTimer............ Wall tot =    1.08521
+Timings> 
+Timings> WosTimer2........... Wall max =  0.0124425
+Timings>                      Wall avg =  0.0124425
+Timings>                      Wall min =  0.0124425
+Timings> 
+Timings> MLMCTimer2.......... Wall max =  0.0147305
+Timings>                      Wall avg =  0.0147305
+Timings>                      Wall min =  0.0147305
+Timings> 
+Timings> WosTimer3........... Wall max =  0.0723555
+Timings>                      Wall avg =  0.0723555
+Timings>                      Wall min =  0.0723555
+Timings> 
+Timings> MLMCTimer3.......... Wall max =  0.0565406
+Timings>                      Wall avg =  0.0565406
+Timings>                      Wall min =  0.0565406
+Timings> 
+Timings> WosTimer4........... Wall max =   0.154677
+Timings>                      Wall avg =   0.154677
+Timings>                      Wall min =   0.154677
+Timings> 
+Timings> MLMCTimer4.......... Wall max =   0.106564
+Timings>                      Wall avg =   0.106564
+Timings>                      Wall min =   0.106564
+Timings> 
+Timings> WosTimer5........... Wall max =   0.295138
+Timings>                      Wall avg =   0.295138
+Timings>                      Wall min =   0.295138
+Timings> 
+Timings> MLMCTimer5.......... Wall max =   0.169152
+Timings>                      Wall avg =   0.169152
+Timings>                      Wall min =   0.169152
+Timings> 
+Timings> ---------------------------------------------
+Warning: Option '4' is not parsed by Ippl.
+Warning: Option '10000' is not parsed by Ippl.
+Warning: Option '0.01' is not parsed by Ippl.
+Warning: Option '0.0005' is not parsed by Ippl.
+Warning: Option '16' is not parsed by Ippl.
+Warning: Option 'mlmcSpeedup' is not parsed by Ippl.
+TestFeynmanKac> Test FeynmanKac, grid = 4 N samples = 10000 delta0 = 0.01 epsilon = 0.0005
+TestFeynmanKac> MLMC speedup test
+TestFeynmanKac>             epsilon,          Dimension,        MLMC result,          MC result,           expected,          MLMC cost,            MC cost,          max Level,               varL,
+TestFeynmanKac>               0.0005,                   2,   1.000910381435727,   1.000396769735101,                   1,            21383902,            40742019,                   3,   0.155193972895451,
+TestFeynmanKac>               0.0005,                   2,  0.9991730546786618,   1.000192441357622,                   1,            19921268,            40103691,                   3,  0.1530422846507694,
+TestFeynmanKac>               0.0005,                   2,  0.9995704804806024,  0.9997652021320811,                   1,            18597094,            41033643,                   3,  0.1579597351719906,
+TestFeynmanKac>               0.0005,                   2,  0.9998482311918933,   1.000067010854526,                   1,            24457536,            40247766,                   3,  0.1529467953993937,
+TestFeynmanKac>               0.0005,                   2,    0.99972906035243,   1.000522673186433,                   1,            18419562,            43696170,                   3,  0.1662624613223365,
+TestFeynmanKac>             epsilon,          Dimension,        MLMC result,          MC result,           expected,          MLMC cost,            MC cost,          max Level,               varL,
+TestFeynmanKac>               0.0005,                   3,   1.000622355548116,   1.000063301441088,                   1,            62092209,           136103132,                   3,   0.161497365271498,
+TestFeynmanKac>               0.0005,                   3,   1.000612360036196,     1.0000831650735,                   1,            64726269,           152266166,                   3,  0.1785793297290711,
+TestFeynmanKac>               0.0005,                   3,  0.9994280112357091,  0.9991975360150782,                   1,            58311372,           147914884,                   3,  0.1746040154015438,
+TestFeynmanKac>               0.0005,                   3,   1.000235412360126,   1.000204785961508,                   1,            60226023,           155147723,                   3,  0.1806899030515597,
+TestFeynmanKac>               0.0005,                   3,   1.000000020874476,  0.9994461664618084,                   1,            59887320,           148917678,                   3,  0.1735680964248408,
+TestFeynmanKac>             epsilon,          Dimension,        MLMC result,          MC result,           expected,          MLMC cost,            MC cost,          max Level,               varL,
+TestFeynmanKac>               0.0005,                   4,  0.9999815179379604,   1.000478390895757,                   1,           119758004,           296283264,                   3,  0.1666517032971236,
+TestFeynmanKac>               0.0005,                   4,   0.999338811993983,  0.9994098141777847,                   1,           112425256,           305244547,                   3,  0.1716035477587502,
+TestFeynmanKac>               0.0005,                   4,  0.9999324879392311,  0.9994688988797479,                   1,           111681708,           303142614,                   3,   0.170932333672421,
+TestFeynmanKac>               0.0005,                   4,    1.00076370730335,   1.000094823227782,                   1,           121907596,           292981054,                   3,   0.164567695898764,
+TestFeynmanKac>               0.0005,                   4,    1.00010420821263,   1.000408753344978,                   1,           111131068,           298658983,                   3,  0.1672474462399512,
+TestFeynmanKac>             epsilon,          Dimension,        MLMC result,          MC result,           expected,          MLMC cost,            MC cost,          max Level,               varL,
+TestFeynmanKac>               0.0005,                   5,  0.9998826890745769,  0.9996861954506274,                   1,           174836600,           456460826,                   3,  0.1504354353992725,
+TestFeynmanKac>               0.0005,                   5,  0.9998729495933874,    1.00068528882685,                   1,           156240210,           467521304,                   3,   0.155691800584191,
+TestFeynmanKac>               0.0005,                   5,   1.000337052395631,   1.001026486680021,                   1,           167690885,           479892602,                   3,  0.1581790967998937,
+TestFeynmanKac>               0.0005,                   5,  0.9999278539371683,   1.000166787657405,                   1,           155462485,           452140111,                   3,   0.149302363269403,
+TestFeynmanKac>               0.0005,                   5,  0.9988711442094271,  0.9999384664893165,                   1,           163200010,           491995794,                   3,  0.1613507247177751,
+Timings> ---------------------------------------------
+Timings>      Timing results for 1 nodes:
+Timings> ---------------------------------------------
+Timings> allTimer............ Wall tot =    2.76206
+Timings> 
+Timings> WosTimer2........... Wall max =  0.0395667
+Timings>                      Wall avg =  0.0395667
+Timings>                      Wall min =  0.0395667
+Timings> 
+Timings> MLMCTimer2.......... Wall max =  0.0326861
+Timings>                      Wall avg =  0.0326861
+Timings>                      Wall min =  0.0326861
+Timings> 
+Timings> WosTimer3........... Wall max =   0.192918
+Timings>                      Wall avg =   0.192918
+Timings>                      Wall min =   0.192918
+Timings> 
+Timings> MLMCTimer3.......... Wall max =   0.123444
+Timings>                      Wall avg =   0.123444
+Timings>                      Wall min =   0.123444
+Timings> 
+Timings> WosTimer4........... Wall max =   0.531453
+Timings>                      Wall avg =   0.531453
+Timings>                      Wall min =   0.531453
+Timings> 
+Timings> MLMCTimer4.......... Wall max =   0.295877
+Timings>                      Wall avg =   0.295877
+Timings>                      Wall min =   0.295877
+Timings> 
+Timings> WosTimer5........... Wall max =   0.954689
+Timings>                      Wall avg =   0.954689
+Timings>                      Wall min =   0.954689
+Timings> 
+Timings> MLMCTimer5.......... Wall max =   0.481885
+Timings>                      Wall avg =   0.481885
+Timings>                      Wall min =   0.481885
+Timings> 
+Timings> ---------------------------------------------
+Warning: Option '4' is not parsed by Ippl.
+Warning: Option '10000' is not parsed by Ippl.
+Warning: Option '0.01' is not parsed by Ippl.
+Warning: Option '0.00025' is not parsed by Ippl.
+Warning: Option '16' is not parsed by Ippl.
+Warning: Option 'mlmcSpeedup' is not parsed by Ippl.
+TestFeynmanKac> Test FeynmanKac, grid = 4 N samples = 10000 delta0 = 0.01 epsilon = 0.00025
+TestFeynmanKac> MLMC speedup test
+TestFeynmanKac>             epsilon,          Dimension,        MLMC result,          MC result,           expected,          MLMC cost,            MC cost,          max Level,               varL,
+TestFeynmanKac>              0.00025,                   2,  0.9998104946986843,   1.000150064457108,                   1,            85480878,           187778707,                   3,  0.1783417184825014,
+TestFeynmanKac>              0.00025,                   2,  0.9998244867912169,  0.9997043824293127,                   1,            80186490,           171032824,                   3,   0.163479795579134,
+TestFeynmanKac>              0.00025,                   2,  0.9999436209091964,  0.9998519012404591,                   1,            74018530,           180620465,                   3,  0.1701049829319778,
+TestFeynmanKac>              0.00025,                   2,  0.9999433132714538,  0.9996579855573131,                   1,            73239354,           168867342,                   3,    0.16008398198748,
+TestFeynmanKac>              0.00025,                   2,   1.000293980843809,  0.9995609986597523,                   1,            80671764,           181289549,                   3,  0.1729925485966214,
+TestFeynmanKac>             epsilon,          Dimension,        MLMC result,          MC result,           expected,          MLMC cost,            MC cost,          max Level,               varL,
+TestFeynmanKac>              0.00025,                   3,  0.9999957814089112,   1.000157334505913,                   1,           248258538,           676172745,                   3,  0.1977213188971209,
+TestFeynmanKac>              0.00025,                   3,  0.9998615364988143,  0.9999690432073216,                   1,           251566962,           590459510,                   3,  0.1725216159486974,
+TestFeynmanKac>              0.00025,                   3,  0.9997483664869161,  0.9995731934354488,                   1,           239417070,           627276494,                   3,  0.1814602661519826,
+TestFeynmanKac>              0.00025,                   3,  0.9995950124752659,  0.9998103276278966,                   1,           269553924,           613525207,                   3,  0.1787440866656476,
+TestFeynmanKac>              0.00025,                   3,   1.000014945913755,  0.9999210506567513,                   1,           239349648,           589005832,                   3,  0.1728678449882782,
+TestFeynmanKac>             epsilon,          Dimension,        MLMC result,          MC result,           expected,          MLMC cost,            MC cost,          max Level,               varL,
+TestFeynmanKac>              0.00025,                   4,   1.000343978732777,   0.999937965956187,                   1,           479113916,          1204313849,                   3,  0.1692453054398515,
+TestFeynmanKac>              0.00025,                   4,  0.9999085087106417,  0.9998858051057953,                   1,           477648376,          1165052715,                   3,  0.1648347000031168,
+TestFeynmanKac>              0.00025,                   4,   1.000369702793888,   1.000154169700811,                   1,           488709256,          1144279105,                   3,  0.1602041601511171,
+TestFeynmanKac>              0.00025,                   4,  0.9999110767577846,   1.000079796859596,                   1,           448665192,          1289057200,                   3,  0.1816272606966482,
+TestFeynmanKac>              0.00025,                   4,  0.9998055325406099,   1.000019170872315,                   1,           456300604,          1192228967,                   3,  0.1676057769451274,
+TestFeynmanKac>             epsilon,          Dimension,        MLMC result,          MC result,           expected,          MLMC cost,            MC cost,          max Level,               varL,
+TestFeynmanKac>              0.00025,                   5,  0.9999780420808024,   1.000105185842102,                   1,           700559565,          1865409591,                   3,  0.1541310266041915,
+TestFeynmanKac>              0.00025,                   5,   1.000216591366366,  0.9995781207494402,                   1,           679573095,          1925305629,                   3,  0.1582910656855367,
+TestFeynmanKac>              0.00025,                   5,  0.9996276388269159,   1.000163243030661,                   1,           645615720,          1783719437,                   3,  0.1466604372907133,
+TestFeynmanKac>              0.00025,                   5,   1.000117810350996,  0.9997959638482433,                   1,           655233275,          1779165889,                   3,  0.1475706355368608,
+TestFeynmanKac>              0.00025,                   5,  0.9994130344101695,    1.00028631136056,                   1,           609606640,          1855975861,                   3,  0.1544145035740592,
+Timings> ---------------------------------------------
+Timings>      Timing results for 1 nodes:
+Timings> ---------------------------------------------
+Timings> allTimer............ Wall tot =    9.99183
+Timings> 
+Timings> WosTimer2........... Wall max =   0.141064
+Timings>                      Wall avg =   0.141064
+Timings>                      Wall min =   0.141064
+Timings> 
+Timings> MLMCTimer2.......... Wall max =    0.10697
+Timings>                      Wall avg =    0.10697
+Timings>                      Wall min =    0.10697
+Timings> 
+Timings> WosTimer3........... Wall max =   0.744217
+Timings>                      Wall avg =   0.744217
+Timings>                      Wall min =   0.744217
+Timings> 
+Timings> MLMCTimer3.......... Wall max =    0.43304
+Timings>                      Wall avg =    0.43304
+Timings>                      Wall min =    0.43304
+Timings> 
+Timings> WosTimer4........... Wall max =    2.06531
+Timings>                      Wall avg =    2.06531
+Timings>                      Wall min =    2.06531
+Timings> 
+Timings> MLMCTimer4.......... Wall max =    1.08578
+Timings>                      Wall avg =    1.08578
+Timings>                      Wall min =    1.08578
+Timings> 
+Timings> WosTimer5........... Wall max =    3.63133
+Timings>                      Wall avg =    3.63133
+Timings>                      Wall min =    3.63133
+Timings> 
+Timings> MLMCTimer5.......... Wall max =    1.67479
+Timings>                      Wall avg =    1.67479
+Timings>                      Wall min =    1.67479
+Timings> 
+Timings> ---------------------------------------------
+Warning: Option '4' is not parsed by Ippl.
+Warning: Option '10000' is not parsed by Ippl.
+Warning: Option '0.01' is not parsed by Ippl.
+Warning: Option '0.0001' is not parsed by Ippl.
+Warning: Option '16' is not parsed by Ippl.
+Warning: Option 'mlmcSpeedup' is not parsed by Ippl.
+TestFeynmanKac> Test FeynmanKac, grid = 4 N samples = 10000 delta0 = 0.01 epsilon = 0.0001
+TestFeynmanKac> MLMC speedup test
+TestFeynmanKac>             epsilon,          Dimension,        MLMC result,          MC result,           expected,          MLMC cost,            MC cost,          max Level,               varL,
+TestFeynmanKac>               0.0001,                   2,  0.9999200577002869,  0.9998098206134044,                   1,           534247054,          1100489851,                   3,  0.1668480736604684,
+TestFeynmanKac>               0.0001,                   2,   1.000056041937669,  0.9999269930375034,                   1,           481217150,          1057018676,                   3,  0.1600205093884633,
+TestFeynmanKac>               0.0001,                   2,  0.9999538907468239,   1.000028442218209,                   1,           426732078,          1033091665,                   3,  0.1574114984906826,
+TestFeynmanKac>               0.0001,                   2,  0.9998804388715725,   1.000105651193235,                   1,           467162866,          1021725083,                   3,  0.1557498251022704,
+TestFeynmanKac>               0.0001,                   2,  0.9998048913670139,   1.000088362393855,                   1,           479084188,          1071177901,                   3,  0.1636795500602053,
+TestFeynmanKac>             epsilon,          Dimension,        MLMC result,          MC result,           expected,          MLMC cost,            MC cost,          max Level,               varL,
+TestFeynmanKac>               0.0001,                   3,     1.0000151213337,  0.9998781806160956,                   1,          1552158069,          3681987166,                   3,  0.1737442037103721,
+TestFeynmanKac>               0.0001,                   3,  0.9999736648067475,  0.9999931232838017,                   1,          1732856514,          3735719774,                   3,  0.1737182100448323,
+TestFeynmanKac>               0.0001,                   3,  0.9998244200025436,  0.9999577384575461,                   1,          1528868049,          3956104244,                   3,  0.1850258469735907,
+TestFeynmanKac>               0.0001,                   3,   1.000022527235852,   1.000098565312541,                   1,          1491045135,          3759986349,                   3,  0.1759112257039651,
+TestFeynmanKac>               0.0001,                   3,  0.9999529218532489,  0.9999478264261091,                   1,          1504226970,          3795785669,                   3,  0.1771197318906394,
+TestFeynmanKac>             epsilon,          Dimension,        MLMC result,          MC result,           expected,          MLMC cost,            MC cost,          max Level,               varL,
+TestFeynmanKac>               0.0001,                   4,   1.000023707130377,  0.9998021472637619,                   1,          2993384232,          7466030063,                   3,   0.168825176471152,
+TestFeynmanKac>               0.0001,                   4,  0.9997356860220905,   1.000042674303705,                   1,          2901561960,          7616948615,                   3,   0.173882610397302,
+TestFeynmanKac>               0.0001,                   4,  0.9998091101148189,   1.000000303790436,                   1,          2947475812,          7668463168,                   3,  0.1719108836111966,
+TestFeynmanKac>               0.0001,                   4,  0.9998015490687023,  0.9999767299630911,                   1,          3022693400,          7219996058,                   3,  0.1622876560947679,
+TestFeynmanKac>               0.0001,                   4,   0.999925115933003,   1.000086368239699,                   1,          2709019776,          7561007524,                   3,  0.1714361789894221,
+TestFeynmanKac>             epsilon,          Dimension,        MLMC result,          MC result,           expected,          MLMC cost,            MC cost,          max Level,               varL,
+TestFeynmanKac>               0.0001,                   5,   1.000033070484172,   1.000076556216287,                   1,          4377232060,         11643504781,                   3,  0.1536895479101311,
+TestFeynmanKac>               0.0001,                   5,    1.00010317985932,  0.9998605581835041,                   1,          4343335060,         11602849743,                   3,  0.1535702906900462,
+TestFeynmanKac>               0.0001,                   5,   1.000116440424542,    1.00000832951793,                   1,          4210960715,         10949398936,                   3,   0.145639150696546,
+TestFeynmanKac>               0.0001,                   5,  0.9999607725511338,  0.9998447740558833,                   1,          4274982485,         11841072441,                   3,  0.1565413890283115,
+TestFeynmanKac>               0.0001,                   5,   1.000117989127605,  0.9999073744173306,                   1,          4169177930,         11634446481,                   3,  0.1545865490801483,
+Timings> ---------------------------------------------
+Timings>      Timing results for 1 nodes:
+Timings> ---------------------------------------------
+Timings> allTimer............ Wall tot =    61.3251
+Timings> 
+Timings> WosTimer2........... Wall max =   0.725933
+Timings>                      Wall avg =   0.725933
+Timings>                      Wall min =   0.725933
+Timings> 
+Timings> MLMCTimer2.......... Wall max =    0.53959
+Timings>                      Wall avg =    0.53959
+Timings>                      Wall min =    0.53959
+Timings> 
+Timings> WosTimer3........... Wall max =     4.6873
+Timings>                      Wall avg =     4.6873
+Timings>                      Wall min =     4.6873
+Timings> 
+Timings> MLMCTimer3.......... Wall max =    2.68187
+Timings>                      Wall avg =    2.68187
+Timings>                      Wall min =    2.68187
+Timings> 
+Timings> WosTimer4........... Wall max =    12.9117
+Timings>                      Wall avg =    12.9117
+Timings>                      Wall min =    12.9117
+Timings> 
+Timings> MLMCTimer4.......... Wall max =    6.61689
+Timings>                      Wall avg =    6.61689
+Timings>                      Wall min =    6.61689
+Timings> 
+Timings> WosTimer5........... Wall max =    22.4689
+Timings>                      Wall avg =    22.4689
+Timings>                      Wall min =    22.4689
+Timings> 
+Timings> MLMCTimer5.......... Wall max =    10.5811
+Timings>                      Wall avg =    10.5811
+Timings>                      Wall min =    10.5811
+Timings> 
+Timings> ---------------------------------------------
+Warning: Option '4' is not parsed by Ippl.
+Warning: Option '10000' is not parsed by Ippl.
+Warning: Option '0.01' is not parsed by Ippl.
+Warning: Option '0.00005' is not parsed by Ippl.
+Warning: Option '16' is not parsed by Ippl.
+Warning: Option 'mlmcSpeedup' is not parsed by Ippl.
+TestFeynmanKac> Test FeynmanKac, grid = 4 N samples = 10000 delta0 = 0.01 epsilon = 5e-05
+TestFeynmanKac> MLMC speedup test
+TestFeynmanKac>             epsilon,          Dimension,        MLMC result,          MC result,           expected,          MLMC cost,            MC cost,          max Level,               varL,
+TestFeynmanKac>                5e-05,                   2,  0.9999679262505397,   1.000043703762468,                   1,          2137422584,          5420571683,                   4,  0.1660787633613434,
+TestFeynmanKac>                5e-05,                   2,   1.000044601124623,   1.000006090280654,                   1,          2069378872,          5678581772,                   4,  0.1727945474314893,
+TestFeynmanKac>                5e-05,                   2,  0.9999533080355938,   1.000080220385728,                   1,          2014309764,          5396828297,                   4,  0.1638309769358901,
+TestFeynmanKac>                5e-05,                   2,  0.9999897652128824,   1.000073985985414,                   1,          2029459520,          5521384359,                   4,  0.1678991701460191,
+TestFeynmanKac>                5e-05,                   2,   1.000051298184888,   1.000006991677958,                   1,          2026439916,          5526914051,                   4,  0.1685717281294344,
+TestFeynmanKac>             epsilon,          Dimension,        MLMC result,          MC result,           expected,          MLMC cost,            MC cost,          max Level,               varL,
+TestFeynmanKac>                5e-05,                   3,   1.000018666148367,  0.9999686103835441,                   1,          6378415116,         18436391265,                   4,   0.172367029497876,
+TestFeynmanKac>                5e-05,                   3,   1.000014771970358,   1.000016514042407,                   1,          6430715994,         18032167645,                   4,  0.1693588733445862,
+TestFeynmanKac>                5e-05,                   3,   1.000057536689224,   1.000064533401757,                   1,          6610922007,         18865374664,                   4,  0.1758371852129116,
+TestFeynmanKac>                5e-05,                   3,   1.000029485626698,   1.000016640801927,                   1,          6547713312,         18060293387,                   4,  0.1690738553032967,
+TestFeynmanKac>                5e-05,                   3,  0.9999581610067683,    1.00005830108089,                   1,          6716761332,         19891946592,                   4,  0.1857291315778831,
+TestFeynmanKac>             epsilon,          Dimension,        MLMC result,          MC result,           expected,          MLMC cost,            MC cost,          max Level,               varL,
+TestFeynmanKac>                5e-05,                   4,   1.000041594352375,   1.000005156636351,                   1,         11983861460,         37111299616,                   4,  0.1651361572035128,
+TestFeynmanKac>                5e-05,                   4,   1.000015145740947,  0.9999825463228134,                   1,         11743101984,         37629970333,                   4,  0.1677601489491164,
+TestFeynmanKac>                5e-05,                   4,   1.000017653530704,  0.9999683258238209,                   1,         12525524488,         38835802469,                   4,  0.1740000210962056,
+TestFeynmanKac>                5e-05,                   4,   1.000047328384838,  0.9999986271799955,                   1,         11677120288,         38354899922,                   4,  0.1713809850195557,
+TestFeynmanKac>                5e-05,                   4,  0.9999987404352122,   0.999986844403753,                   1,         13681312664,         37438291459,                   4,  0.1685836037156998,
+TestFeynmanKac>             epsilon,          Dimension,        MLMC result,          MC result,           expected,          MLMC cost,            MC cost,          max Level,               varL,
+TestFeynmanKac>                5e-05,                   5,   1.000025331970899,    1.00003746304736,                   1,         17921428820,         58495978879,                   4,  0.1533532370987601,
+TestFeynmanKac>                5e-05,                   5,  0.9999959428058581,   1.000026979604741,                   1,         17237523975,         59350469377,                   4,  0.1553215310212368,
+TestFeynmanKac>                5e-05,                   5,   1.000064095423006,  0.9999664656279507,                   1,         17389479210,         60003388749,                   4,  0.1562785224716448,
+TestFeynmanKac>                5e-05,                   5,   1.000017531846046,   1.000023748597885,                   1,         17080164845,         59264358568,                   4,  0.1551432746372233,
+TestFeynmanKac>                5e-05,                   5,   1.000041624506472,  0.9999656627169381,                   1,         17667945630,         58828646993,                   4,  0.1533387244895641,
+Timings> ---------------------------------------------
+Timings>      Timing results for 1 nodes:
+Timings> ---------------------------------------------
+Timings> allTimer............ Wall tot =     281.26
+Timings> 
+Timings> WosTimer2........... Wall max =    3.27374
+Timings>                      Wall avg =    3.27374
+Timings>                      Wall min =    3.27374
+Timings> 
+Timings> MLMCTimer2.......... Wall max =    2.25034
+Timings>                      Wall avg =    2.25034
+Timings>                      Wall min =    2.25034
+Timings> 
+Timings> WosTimer3........... Wall max =    22.0533
+Timings>                      Wall avg =    22.0533
+Timings>                      Wall min =    22.0533
+Timings> 
+Timings> MLMCTimer3.......... Wall max =    11.2047
+Timings>                      Wall avg =    11.2047
+Timings>                      Wall min =    11.2047
+Timings> 
+Timings> WosTimer4........... Wall max =    62.6549
+Timings>                      Wall avg =    62.6549
+Timings>                      Wall min =    62.6549
+Timings> 
+Timings> MLMCTimer4.......... Wall max =    27.9351
+Timings>                      Wall avg =    27.9351
+Timings>                      Wall min =    27.9351
+Timings> 
+Timings> WosTimer5........... Wall max =    108.686
+Timings>                      Wall avg =    108.686
+Timings>                      Wall min =    108.686
+Timings> 
+Timings> MLMCTimer5.......... Wall max =    43.0776
+Timings>                      Wall avg =    43.0776
+Timings>                      Wall min =    43.0776
+Timings> 
+Timings> ---------------------------------------------
+Warning: Option '4' is not parsed by Ippl.
+Warning: Option '10000' is not parsed by Ippl.
+Warning: Option '0.01' is not parsed by Ippl.
+Warning: Option '0.000025' is not parsed by Ippl.
+Warning: Option '16' is not parsed by Ippl.
+Warning: Option 'mlmcSpeedup' is not parsed by Ippl.
+TestFeynmanKac> Test FeynmanKac, grid = 4 N samples = 10000 delta0 = 0.01 epsilon = 2.5e-05
+TestFeynmanKac> MLMC speedup test
+TestFeynmanKac>             epsilon,          Dimension,        MLMC result,          MC result,           expected,          MLMC cost,            MC cost,          max Level,               varL,
+TestFeynmanKac>              2.5e-05,                   2,  0.9999739473429586,   1.000032264776979,                   1,          8552998782,         22592057121,                   4,  0.1711826570109013,
+TestFeynmanKac>              2.5e-05,                   2,  0.9999804253554951,  0.9999992507332888,                   1,          8828572298,         19299886120,                   4,  0.1478963808845876,
+TestFeynmanKac>              2.5e-05,                   2,  0.9999851529530094,   1.000011918379485,                   1,          8065895746,         21103630262,                   4,  0.1632300174432159,
+TestFeynmanKac>              2.5e-05,                   2,  0.9999880632215573,  0.9999788014277374,                   1,          8043939090,         21592056826,                   4,  0.1653592620084915,
+TestFeynmanKac>              2.5e-05,                   2,   1.000015092442556,  0.9999831349544013,                   1,          8530689250,         21417727361,                   4,  0.1626063458130477,
+TestFeynmanKac>             epsilon,          Dimension,        MLMC result,          MC result,           expected,          MLMC cost,            MC cost,          max Level,               varL,
+TestFeynmanKac>              2.5e-05,                   3,  0.9999473354284623,   1.000026474430868,                   1,         25465459020,         69133630188,                   4,   0.162702769270633,
+TestFeynmanKac>              2.5e-05,                   3,  0.9999960283919404,    1.00000598569343,                   1,         26037902958,         78591946964,                   4,  0.1829454189585593,
+TestFeynmanKac>              2.5e-05,                   3,   1.000001490691856,   1.000064254770235,                   1,         25942544886,         79090295514,                   4,  0.1859034680021332,
+TestFeynmanKac>              2.5e-05,                   3,   1.000022196214992,  0.9999889115731178,                   1,         25598805282,         76674558518,                   4,  0.1784514383019496,
+TestFeynmanKac>              2.5e-05,                   3,   1.000076974914706,   1.000032568448288,                   1,         26538730539,         79766989687,                   4,   0.186545254697055,
+TestFeynmanKac>             epsilon,          Dimension,        MLMC result,          MC result,           expected,          MLMC cost,            MC cost,          max Level,               varL,
+TestFeynmanKac>              2.5e-05,                   4,  0.9999841259111207,   1.000015749897907,                   1,         47923595968,        153864124755,                   4,  0.1713571388351795,
+TestFeynmanKac>              2.5e-05,                   4,   1.000030129670264,  0.9999901008301821,                   1,         49568416428,        142602877961,                   4,  0.1600775014968667,
+TestFeynmanKac>              2.5e-05,                   4,  0.9999940556695647,  0.9999855420502293,                   1,         51173917916,        154929677668,                   4,  0.1734875740707414,
+TestFeynmanKac>              2.5e-05,                   4,  0.9999698439942417,   1.000003060118879,                   1,         48821162920,        140768535246,                   4,  0.1583439540998037,
+TestFeynmanKac>              2.5e-05,                   4,  0.9999740308090698,  0.9999666531905314,                   1,         47025791584,        154031124731,                   4,   0.172612764553365,
+TestFeynmanKac>             epsilon,          Dimension,        MLMC result,          MC result,           expected,          MLMC cost,            MC cost,          max Level,               varL,
+TestFeynmanKac>              2.5e-05,                   5,   1.000026616394575,  0.9999954817664355,                   1,         70901753115,        231680701102,                   4,  0.1509772181370959,
+TestFeynmanKac>              2.5e-05,                   5,  0.9999961729114423,  0.9999761439584571,                   1,         70867171495,        257089217434,                   4,  0.1671331014087824,
+TestFeynmanKac>              2.5e-05,                   5,   1.000021703306852,    1.00006879772223,                   1,         79028756760,        285345362055,                   5,  0.1545227193267474,
+TestFeynmanKac>              2.5e-05,                   5,  0.9999721733064399,  0.9999803726654473,                   1,         69587840705,        233516949576,                   4,  0.1521099139907428,
+TestFeynmanKac>              2.5e-05,                   5,   1.000017136639471,   1.000004595728324,                   1,         74787927975,        239575480180,                   4,  0.1561315404562885,
+Timings> ---------------------------------------------
+Timings>      Timing results for 1 nodes:
+Timings> ---------------------------------------------
+Timings> allTimer............ Wall tot =     1137.7
+Timings> 
+Timings> WosTimer2........... Wall max =    13.0805
+Timings>                      Wall avg =    13.0805
+Timings>                      Wall min =    13.0805
+Timings> 
+Timings> MLMCTimer2.......... Wall max =    9.00145
+Timings>                      Wall avg =    9.00145
+Timings>                      Wall min =    9.00145
+Timings> 
+Timings> WosTimer3........... Wall max =    88.2826
+Timings>                      Wall avg =    88.2826
+Timings>                      Wall min =    88.2826
+Timings> 
+Timings> MLMCTimer3.......... Wall max =    44.4716
+Timings>                      Wall avg =    44.4716
+Timings>                      Wall min =    44.4716
+Timings> 
+Timings> WosTimer4........... Wall max =    247.572
+Timings>                      Wall avg =    247.572
+Timings>                      Wall min =    247.572
+Timings> 
+Timings> MLMCTimer4.......... Wall max =    110.638
+Timings>                      Wall avg =    110.638
+Timings>                      Wall min =    110.638
+Timings> 
+Timings> WosTimer5........... Wall max =    444.484
+Timings>                      Wall avg =    444.484
+Timings>                      Wall min =    444.484
+Timings> 
+Timings> MLMCTimer5.......... Wall max =    180.042
+Timings>                      Wall avg =    180.042
+Timings>                      Wall min =    180.042
+Timings> 
+Timings> ---------------------------------------------

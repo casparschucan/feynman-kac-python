@@ -1,0 +1,57 @@
+starting make on job 333114
+Warning: Option '128' is not parsed by Ippl.
+Warning: Option '10000' is not parsed by Ippl.
+Warning: Option '0.01' is not parsed by Ippl.
+Warning: Option '0.001' is not parsed by Ippl.
+Warning: Option '16' is not parsed by Ippl.
+Warning: Option 'CGComparison' is not parsed by Ippl.
+TestFeynmanKac> Test FeynmanKac, grid = 128 N samples = 10000 delta0 = 0.01 epsilon = 0.001
+TestFeynmanKac> CG Comparison test
+TestFeynmanKac>             mlmcErr,           mlmcTime,         CGErrPoint,         CGErrRelL2,              CGTime
+TestFeynmanKac>           0.00224862,          0.00339551,           0.0084421,           0.0185785,           0.0270854
+TestFeynmanKac>           0.00152503,          0.00271518,           0.0084421,           0.0185785,           0.0292339
+TestFeynmanKac>          0.000767178,          0.00322215,           0.0084421,           0.0185785,           0.0291724
+TestFeynmanKac>          0.000174456,           0.0022691,           0.0084421,           0.0185785,           0.0290861
+TestFeynmanKac>          0.000189478,          0.00256815,           0.0084421,           0.0185785,           0.0292391
+TestFeynmanKac>             mlmcErr,           mlmcTime,         CGErrPoint,         CGErrRelL2,              CGTime
+TestFeynmanKac>           0.00100476,           0.0102643,           0.0058569,            0.019473,            0.180017
+TestFeynmanKac>          0.000542959,          0.00943393,           0.0058569,            0.019473,            0.205198
+TestFeynmanKac>           0.00029552,           0.0106682,           0.0058569,            0.019473,            0.205489
+TestFeynmanKac>          0.000432721,          0.00836119,           0.0058569,            0.019473,            0.204761
+TestFeynmanKac>          0.000786083,          0.00844146,           0.0058569,            0.019473,            0.204862
+TestFeynmanKac>             mlmcErr,           mlmcTime,         CGErrPoint,         CGErrRelL2,              CGTime
+TestFeynmanKac>           0.00056041,           0.0220312,          0.00371288,           0.0201872,             17.2439
+TestFeynmanKac>           0.00198962,           0.0193182,          0.00371288,           0.0201872,             19.5028
+TestFeynmanKac>           0.00122024,           0.0243749,          0.00371288,           0.0201872,             19.5081
+TestFeynmanKac>           0.00154589,            0.021935,          0.00371288,           0.0201872,             19.5184
+TestFeynmanKac>          1.44696e-05,           0.0210934,          0.00371288,           0.0201872,             19.5327
+Timings> ---------------------------------------------
+Timings>      Timing results for 1 nodes:
+Timings> ---------------------------------------------
+Timings> allTimer............ Wall tot =    103.421
+Timings> 
+Timings> MLMCTimer2.......... Wall max = 0.00256815
+Timings>                      Wall avg = 0.00256815
+Timings>                      Wall min = 0.00256815
+Timings> 
+Timings> CGTimer2............ Wall max =  0.0292391
+Timings>                      Wall avg =  0.0292391
+Timings>                      Wall min =  0.0292391
+Timings> 
+Timings> MLMCTimer3.......... Wall max = 0.00844146
+Timings>                      Wall avg = 0.00844146
+Timings>                      Wall min = 0.00844146
+Timings> 
+Timings> CGTimer3............ Wall max =   0.204862
+Timings>                      Wall avg =   0.204862
+Timings>                      Wall min =   0.204862
+Timings> 
+Timings> MLMCTimer4.......... Wall max =  0.0210934
+Timings>                      Wall avg =  0.0210934
+Timings>                      Wall min =  0.0210934
+Timings> 
+Timings> CGTimer4............ Wall max =    19.5327
+Timings>                      Wall avg =    19.5327
+Timings>                      Wall min =    19.5327
+Timings> 
+Timings> ---------------------------------------------
