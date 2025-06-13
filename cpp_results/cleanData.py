@@ -203,7 +203,7 @@ if __name__ == "__main__":
 
     options = ["cg", "mlmc", "conv", "test_info"]
     parser = argparse.ArgumentParser(description="Extract CG and MLMC data from output files.")
-    parser.add_argument("filetype", choices=options, help="Type of data to extract: 'cg', 'mlmc', or 'conv'.")
+    parser.add_argument("filetype", choices=options, help="Type of data to extract: 'cg', 'mlmc', or 'conv' or whether to print the run parameters 'test_info'.")
     parser.add_argument("input_file", help="Input file path containing the data to extract.")
     parser.add_argument("-o", "--output_csv", help="Output CSV file path (optional).")
 
