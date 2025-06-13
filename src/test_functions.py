@@ -44,13 +44,15 @@ def poly_rhs(x, y):
 
 
 def gaussian(x, y):
-    return np.exp(-((x-0.5)**2 + (y-0.5)**2)/0.01)
+    mu = 0.01
+    return np.exp(-((x-0.5)**2 + (y-0.5)**2)/mu)
 
 
 def gaussian_rhs(x, y):
+    mu = 0.01
     # Laplacian of exp(-((x-0.5)²+(y-0.5)²)/0.01)
-    r2 = ((x-0.5)**2 + (y-0.5)**2)/0.01
-    return -.5*(4*r2 - 4)*np.exp(-r2)/0.01
+    r2 = ((x-0.5)**2 + (y-0.5)**2)/mu
+    return -1.*(2.*r2 - 2)*np.exp(-r2)/mu
 
 
 def exp(x, y):
